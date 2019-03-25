@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">RoboBasicBluetoothControl</string>
+    <string name="device_name">Device Name</string>
+    <string name="mac_address">MAC address</string>
+    <string name="main_intro">Available BLE Devices will be shown soon. select one to connect to it.</string>
+    <string name="debug">debug</string>
+    <string name="send">send</string>
+    <string name="send_info">send some data</string>
+    <string name="debug_info">Debug text output:</string>
 </resources>
