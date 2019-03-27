@@ -15,17 +15,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * MainActivity starts search for Bluetooth devices and shows them in a RecyclerView,
+ * connect to one by clicking on it
+ */
 public class MainActivity extends AppCompatActivity {
 
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothLeScanner mBluetoothScanner;
-    private boolean mScanning;
     private Handler mHandler;
     private DeviceAdapter mDeviceListAdapter;
+
+    private Button mStartButton;
+    private TextView mInfoTextView;
 
     // Stops scanning after 10 seconds.
     private static final long   SCAN_PERIOD = 10000;
@@ -45,6 +54,17 @@ public class MainActivity extends AppCompatActivity {
         rvDevices.setLayoutManager(new LinearLayoutManager(this));
 
         mHandler = new Handler();
+
+        mInfoTextView = findViewById(R.id.tv_main_info);
+
+        mStartButton = findViewById(R.id.btn_main_start_scan);
+        mStartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mInfoTextView.setVisibility(View.VISIBLE);
+                scanDevice(true);
+            }
+        });
 
         // Initializes Bluetooth adapter.
         final BluetoothManager bluetoothManager =
@@ -105,18 +125,15 @@ public class MainActivity extends AppCompatActivity {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mScanning = false;
                     mBluetoothScanner.stopScan(mScanCallback);
                   //  invalidateOptionsMenu();
                 }
             }, SCAN_PERIOD);
 
-            mScanning = true;
             mBluetoothScanner.startScan(mScanCallback);
 
 
         } else {
-            mScanning = false;
             mBluetoothScanner.stopScan(mScanCallback);
 
         }

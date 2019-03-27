@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+/**
+ * CreateMoveActivity will be used to create custom combinations of movements for the robot to act out
+ */
 public class CreateMoveActivity extends AppCompatActivity {
 
     @Override

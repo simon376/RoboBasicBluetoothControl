@@ -7,18 +7,29 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/tv_main_intro"
+        android:id="@+id/tv_main_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/main_intro"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/main_info"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.060000002" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_main_start_scan" />
+
+    <Button
+        android:id="@+id/btn_main_start_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:text="@string/start_scan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_main_devices"
@@ -31,7 +42,8 @@
         app:layout_constraintBottom_toTopOf="@+id/btn_main_debug"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_main_intro" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_main_info"
+        tools:listitem="@layout/item_device" />
 
     <Button
         android:id="@+id/btn_main_debug"

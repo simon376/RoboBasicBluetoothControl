@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".DebugActivity">
 
+    <include
+        android:id="@+id/include_item_device"
+        layout="@layout/item_device"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btn_dbg_send"
         android:layout_width="0dp"
@@ -22,34 +34,66 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:ems="10"
+        android:hint="@string/send_info"
+        android:importantForAutofill="no"
         android:inputType="textPersonName"
-        android:text="@string/send_info"
+        app:layout_constraintBottom_toTopOf="@+id/tv_dbg_info"
         app:layout_constraintEnd_toStartOf="@+id/btn_dbg_send"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_dbg_output"
-        android:layout_width="395dp"
-        android:layout_height="468dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_dbg_con_status"
+        tools:targetApi="o" />
 
     <TextView
         android:id="@+id/tv_dbg_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/debug_info"
-        app:layout_constraintBottom_toTopOf="@+id/rv_dbg_output"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_dbg_send" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_dbg_send" />
+
+    <TextView
+        android:id="@+id/tv_dbg_con_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/connection_status"
+        app:layout_constraintStart_toStartOf="@+id/et_dbg_send"
+        app:layout_constraintTop_toBottomOf="@+id/include_item_device" />
+
+    <TextView
+        android:id="@+id/tv_dbg_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/disconnected"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tv_dbg_con_status"
+        app:layout_constraintStart_toStartOf="@+id/btn_dbg_send" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_dbg_output"
+        android:layout_width="0dp"
+        android:layout_height="360dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_dbg_info"
+        tools:listitem="@layout/item_message" />
+
+    <Button
+        android:id="@+id/btn_dbg_disconnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/disconnect"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_dbg_output" />
 </androidx.constraintlayout.widget.ConstraintLayout>

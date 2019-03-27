@@ -18,13 +18,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <service
-            android:name=".BluetoothService"
-            android:enabled="true"
-            android:exported="true"></service>
-
-        <activity android:name=".CreateMoveActivity" />
-        <activity android:name=".DebugActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,6 +25,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".CreateMoveActivity" />
+        <activity android:name=".DebugActivity" />
+        <service
+        android:name=".BluetoothService"
+        android:enabled="true"/>
+
     </application>
 
 </manifest>

@@ -3,6 +3,7 @@ package de.othr.robobasic.robobasicbluetoothcontrol;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Debug;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,13 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
+/**
+* Adapter for displaying found devices in a RecyclerView
+*/
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder> {
 
     private List<BluetoothDevice> mDevices;
+    private Context mContext;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
@@ -35,15 +39,19 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             if(position != RecyclerView.NO_POSITION){
                 final BluetoothDevice device = mDevices.get(position);
                 if (device == null) return;
-                //TODO: Connect to Device, open Debug screen
-//                final Intent intent = new Intent(this, DebugActivity.class);
-////                intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, device.getName());
-////                intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+                //TODO: open DebugActivity to Connect to Device
+                final Intent intent = new Intent(mContext, DebugActivity.class);
+                intent.putExtra(DebugActivity.EXTRAS_DEVICE_NAME, device.getName());
+                intent.putExtra(DebugActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+
+
+                //TODO: somehow tell MainActivity to stop scanning
+                // or do it inside the DebugActivity class
 //                if (mScanning) {
 //                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
 //                    mScanning = false;
 //                }
-//                startActivity(intent);
+                mContext.startActivity(intent);
 
             }
 
@@ -57,8 +65,8 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     @NonNull
     @Override
     public DeviceAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
+        mContext = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(mContext);
 
         View deviceView = inflater.inflate(R.layout.item_device, parent, false);
 
@@ -80,7 +88,10 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return mDevices.size();
+        if(mDevices!= null)
+            return mDevices.size();
+        else
+            return 0;
     }
 
     public void addDevice(BluetoothDevice device){
