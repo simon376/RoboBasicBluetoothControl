@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
             mDeviceListAdapter.addDevice(result.getDevice());
-            mDeviceListAdapter.notifyDataSetChanged();  //TODO itemInserted
+            mDeviceListAdapter.notifyDataSetChanged();  //TODO NotifyItemInserted
         }
 
         @Override

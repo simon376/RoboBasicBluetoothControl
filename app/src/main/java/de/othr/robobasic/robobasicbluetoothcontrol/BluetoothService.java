@@ -50,9 +50,9 @@ public class BluetoothService extends Service {
     public final static String EXTRA_DATA =
             "de.othr.robobasic.EXTRA_DATA";
 
+    //TODO: sample GATT Characteristics data
     public final static UUID UUID_HEART_RATE_MEASUREMENT =
-            UUID.fromString("00002a37-0000-1000-8000-00805f9b34fb");    //TODO: sample data
-    public static String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
+            UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
 
 
     // Implements callback methods for GATT events that the app cares about.  For example,
@@ -115,6 +115,7 @@ public class BluetoothService extends Service {
         final Intent intent = new Intent(action);
 
         //TODO: Parse the information received
+        // TODO: Find out which GATT Characteristics are used by the bluetooth controller by default
 
         // This is special handling for the Heart Rate Measurement profile.  Data parsing is
         // carried out as per profile specifications:
@@ -292,7 +293,7 @@ public class BluetoothService extends Service {
         // This is specific to Heart Rate Measurement.
         if (UUID_HEART_RATE_MEASUREMENT.equals(characteristic.getUuid())) {
             BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
-                    UUID.fromString(CLIENT_CHARACTERISTIC_CONFIG));
+                    UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
             mBluetoothGatt.writeDescriptor(descriptor);
         }

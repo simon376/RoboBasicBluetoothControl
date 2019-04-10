@@ -13,8 +13,9 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 /**
-* Adapter for displaying found devices in a RecyclerView
+* Adapter for displaying found bluetooth le devices in a RecyclerView in the MainActivity
 */
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder> {
 
