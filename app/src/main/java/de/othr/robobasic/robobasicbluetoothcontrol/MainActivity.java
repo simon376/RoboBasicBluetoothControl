@@ -1,6 +1,7 @@
 package de.othr.robobasic.robobasicbluetoothcontrol;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +19,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,36 +37,19 @@ public class MainActivity extends AppCompatActivity {
 
     private Button mStartButton;
     private TextView mInfoTextView;
+    private RecyclerView mRecyclerView;
 
     // Stops scanning after 10 seconds.
     private static final long   SCAN_PERIOD = 10000;
     private static final int    REQUEST_ENABLE_BT = 1;
 
-    ArrayList<BluetoothDevice> mDevices;
+    ArrayList<BluetoothDevice> mDevices = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView rvDevices = findViewById(R.id.rv_main_devices);
-         // setup devicelist
-        mDeviceListAdapter = new DeviceAdapter(mDevices);
-        rvDevices.setAdapter(new DeviceAdapter(mDevices));
-        rvDevices.setLayoutManager(new LinearLayoutManager(this));
-
-        mHandler = new Handler();
-
-        mInfoTextView = findViewById(R.id.tv_main_info);
-
-        mStartButton = findViewById(R.id.btn_main_start_scan);
-        mStartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mInfoTextView.setVisibility(View.VISIBLE);
-                scanDevice(true);
-            }
-        });
 
         // Initializes Bluetooth adapter.
         final BluetoothManager bluetoothManager =
@@ -79,6 +64,72 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
+        mRecyclerView = findViewById(R.id.rv_main_devices);
+         // setup devicelist
+        //TODO: for debugging only
+        createSampleData();
+
+        mDeviceListAdapter = new DeviceAdapter(mDevices);
+        mDeviceListAdapter.setOnItemClickListener(new DeviceAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                final BluetoothDevice device = mDevices.get(position);
+                if (device == null) return;
+
+                //open DebugActivity to Connect to Device
+                final Intent intent = new Intent(MainActivity.this, DebugActivity.class);
+                intent.putExtra(DebugActivity.EXTRAS_DEVICE_NAME, device.getName());
+                intent.putExtra(DebugActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+                startActivity(intent);
+
+                //tell MainActivity to stop scanning
+                scanDevice(false);
+            }
+        });
+
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView.ItemDecoration itemDecoration = new
+                DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        mRecyclerView.addItemDecoration(itemDecoration);
+
+        mRecyclerView.setAdapter(mDeviceListAdapter);
+
+        mHandler = new Handler();
+
+        mInfoTextView = findViewById(R.id.tv_main_info);
+
+        mStartButton = findViewById(R.id.btn_main_start_scan);
+        mStartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mInfoTextView.setVisibility(View.VISIBLE);
+                scanDevice(true);
+            }
+        });
+
+
+
+    }
+
+    private void createSampleData() {
+        String[] addresses = {"00:11:22:33:AA:BB","44:55:66:77:88:BB","00:22:44:66:AA:BB"};
+        for (int i = 0; i < 10; i++) {
+            String address = addresses[i%3];
+            if(BluetoothAdapter.checkBluetoothAddress(address)){
+                BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+                if(device != null){
+                    mDevices.add(device);
+                }
+                else
+                {
+                    String error = "device is null breakpoint " + address; //exception handling at its finest... lol
+                }
+            }
+            else{
+                String error = "bluetooth address invalid breakpoint " + address;
+            }
+        }
     }
 
     @Override
@@ -95,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         scanDevice(false);
-        mDeviceListAdapter.clear();
+       // mDeviceListAdapter.clear();
     }
 
 
@@ -115,6 +166,9 @@ public class MainActivity extends AppCompatActivity {
         // Initializes list view adapter.
 //        mLeDeviceListAdapter = new LeDeviceListAdapter();
 //        setListAdapter(mLeDeviceListAdapter);
+        mDeviceListAdapter.notifyDataSetChanged();
+
+
         scanDevice(true);
 
     }
@@ -146,6 +200,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
+            String name = result.getDevice().getName();
+
+            Toast.makeText(MainActivity.this, ("found device!:" + name), Toast.LENGTH_SHORT).show();
             mDeviceListAdapter.addDevice(result.getDevice());
             mDeviceListAdapter.notifyDataSetChanged();  //TODO NotifyItemInserted
         }

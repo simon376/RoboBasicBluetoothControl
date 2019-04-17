@@ -1,6 +1,9 @@
 package de.othr.robobasic.robobasicbluetoothcontrol;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Debug;
@@ -20,53 +23,65 @@ import androidx.recyclerview.widget.RecyclerView;
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder> {
 
     private List<BluetoothDevice> mDevices;
-    private Context mContext;
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    /***** Creating OnItemClickListener *****/
+
+    // Define listener member variable
+    private OnItemClickListener listener;
+    // Define the listener interface
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+    }
+    // Define the method that allows the parent activity or fragment to define the listener
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+
+    // Provide a reference to the views for each data item
+    // Complex data items may need more than one view per item, and
+    // you provide access to all the views for a data item in a view holder
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView mNameTextView;
         TextView mAddressTextView;
+        TextView mClassTextView;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull final View itemView) {
             super(itemView);
 
             mNameTextView = itemView.findViewById(R.id.tv_item_device_name);
             mAddressTextView = itemView.findViewById(R.id.tv_item_device_mac);
-        }
+            mClassTextView = itemView.findViewById(R.id.tv_item_device_class);
 
-        @Override
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-            if(position != RecyclerView.NO_POSITION){
-                final BluetoothDevice device = mDevices.get(position);
-                if (device == null) return;
-                //TODO: open DebugActivity to Connect to Device
-                final Intent intent = new Intent(mContext, DebugActivity.class);
-                intent.putExtra(DebugActivity.EXTRAS_DEVICE_NAME, device.getName());
-                intent.putExtra(DebugActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
-
-
-                //TODO: somehow tell MainActivity to stop scanning
-                // or do it inside the DebugActivity class
-//                if (mScanning) {
-//                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
-//                    mScanning = false;
-//                }
-                mContext.startActivity(intent);
-
-            }
+            // Setup the click listener
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Triggers click upwards to the adapter on click
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(itemView, position);
+                        }
+                    }
+                }
+            });
 
         }
+
     }
 
     public DeviceAdapter(List<BluetoothDevice> devices){
         mDevices = devices;
     }
 
+    // Create new views (invoked by the layout manager)
     @NonNull
     @Override
     public DeviceAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        mContext = parent.getContext();
+        // create a new view
+        Context mContext = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(mContext);
 
         View deviceView = inflater.inflate(R.layout.item_device, parent, false);
@@ -76,15 +91,73 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         return viewHolder;
     }
 
+    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull DeviceAdapter.ViewHolder holder, int position) {
+        // - get element from your dataset at this position
+        // - replace the contents of the view with that element
+
         BluetoothDevice device = mDevices.get(position);
+
+        int deviceClass = device.getBluetoothClass().getDeviceClass();
 
         TextView tvName = holder.mNameTextView;
         TextView tvAddress = holder.mAddressTextView;
-        tvName.setText(device.getName());
-        tvAddress.setText(device.getAddress());
+        TextView tvClass = holder.mClassTextView;
+        String name = device.getName();
+        String address = device.getAddress();
+        if(name != null)
+            tvName.setText(name);
+        else
+            tvName.setText(("Default Device Name " + position));
+        if(address != null)
+            tvAddress.setText(address);
+        if(deviceClass != 0)
+            tvClass.setText(getClassMajor(deviceClass));
 
+
+
+    }
+
+    // small helper function to show BluetoothClass as String, could be replaced later by nice symbols
+    private String getClassMajor(int constant){
+        switch(constant){
+            case BluetoothClass
+                    .Device.Major.AUDIO_VIDEO:
+                return "AUDIO_VIDEO";
+            case BluetoothClass
+                    .Device.Major.COMPUTER:
+                return "COMPUTER";
+            case BluetoothClass
+                    .Device.Major.HEALTH:
+                return "HEALTH";
+            case BluetoothClass
+                    .Device.Major.IMAGING:
+                return "IMAGING";
+            case BluetoothClass
+                    .Device.Major.MISC:
+                return "MISC";
+            case BluetoothClass
+                    .Device.Major.NETWORKING:
+                return "NETWORKING";
+            case BluetoothClass
+                    .Device.Major.PERIPHERAL:
+                return "PERIPHERAL";
+            case BluetoothClass
+                    .Device.Major.PHONE:
+                return "PHONE";
+            case BluetoothClass
+                    .Device.Major.TOY:
+                return "TOY";
+            case BluetoothClass
+                    .Device.Major.UNCATEGORIZED:
+                return "UNCATEGORIZED";
+            case BluetoothClass
+                    .Device.Major.WEARABLE:
+                return "WEARABLE";
+            default:
+                return "UNKNOWN";
+        }
     }
 
     @Override

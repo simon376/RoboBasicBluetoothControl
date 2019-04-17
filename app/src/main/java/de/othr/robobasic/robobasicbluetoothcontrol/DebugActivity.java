@@ -40,6 +40,7 @@ public class DebugActivity extends AppCompatActivity {
 
     private TextView mConnectionState;
     private TextView mDataField;
+    private TextView mTerminal;
     private String mDeviceName;
     private String mDeviceAddress;
 
@@ -48,8 +49,6 @@ public class DebugActivity extends AppCompatActivity {
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
 
-    private  ArrayList<Message> mMessages;
-    private MessageAdapter mAdapter;
     private boolean mConnected = false;
     private BluetoothGattCharacteristic mNotifyCharacteristic;
 
@@ -156,12 +155,7 @@ public class DebugActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
         mGattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
         mGattServicesList.setOnChildClickListener(servicesListClickListner);
-
-        RecyclerView rvMessages = findViewById(R.id.rv_dbg_output);
-        mMessages = Message.createTestMessages(10); //debug
-        mAdapter = new MessageAdapter(mMessages);
-        rvMessages.setAdapter(mAdapter);
-        rvMessages.setLayoutManager(new LinearLayoutManager(this));
+        mTerminal = findViewById(R.id.tv_terminal);
 
         Intent gattServiceIntent = new Intent(this, BluetoothService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
@@ -204,9 +198,7 @@ public class DebugActivity extends AppCompatActivity {
     private void displayData(String data) {
         //TODO: display message in output terminal
         if (data != null) {
-            int curSize = mAdapter.getItemCount();
-            mMessages.add(new Message(data));
-            mAdapter.notifyItemInserted(curSize);
+            mTerminal.append(("\n" + data));
         }
     }
     // Demonstrates how to iterate through the supported GATT Services/Characteristics.
