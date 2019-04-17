@@ -13,6 +13,7 @@ public class MoveSequence {
         int timestamp;  // timestamp when this move is to be executed
         Move move;      // which move to execute
     }
+    //TODO: ForeignKeys
 
     @PrimaryKey(autoGenerate = true)
     private int id;

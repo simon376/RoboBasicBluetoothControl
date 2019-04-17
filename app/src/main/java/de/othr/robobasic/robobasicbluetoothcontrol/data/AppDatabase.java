@@ -8,10 +8,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+@Database(entities = {Move.class, MoveSequence.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     // Data Access Objects
     public abstract MoveDao moveDao();
@@ -26,7 +28,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
 
-    static AppDatabase getInstance(final Context context) {
+    public static AppDatabase getInstance(final Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {

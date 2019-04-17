@@ -18,6 +18,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <activity
+            android:name=".MoveListActivity"
+            android:label="@string/title_activity_move_list"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,13 +29,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".CreateMoveActivity" />
         <activity android:name=".DebugActivity" />
-        <service
-        android:name=".BluetoothService"
-        android:enabled="true"/>
 
+        <service
+            android:name=".BluetoothService"
+            android:enabled="true" />
     </application>
 
 </manifest>

@@ -26,5 +26,6 @@
     <string name="unknown_characteristic">Unknown characteristic</string>
     <string name="unknown_service">Unknown service</string>
     <string name="bluetooth_class">class</string>
+    <string name="title_activity_move_list">MoveListActivity</string>
 
 </resources>
