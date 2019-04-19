@@ -18,4 +18,11 @@ public class Move {
     String message; /* message sent to the robot identifying the specific move */
 
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

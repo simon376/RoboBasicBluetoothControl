@@ -9,6 +9,14 @@ import androidx.room.PrimaryKey;
 @Entity
 public class MoveSequence {
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     class timedMove{
         int timestamp;  // timestamp when this move is to be executed
         Move move;      // which move to execute
@@ -20,8 +28,8 @@ public class MoveSequence {
 
     String name;    /* Name of the move sequence shown in View */
 
-    @ColumnInfo(name = "move_list")
-    List<timedMove> timedMoveList; /* list of moves to be executed by the robot for this sequence */
-
+   // @ColumnInfo(name = "move_list")
+  //  List<timedMove> timedMoveList; /* list of moves to be executed by the robot for this sequence */
+//TODO: converter? anders lösen?
 
 }
