@@ -17,6 +17,7 @@ import android.os.IBinder;
 import android.text.Layout;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
@@ -31,6 +32,12 @@ import java.util.List;
  *
  * the Activity communicates with  {@code BluetoothService} which in turn interacts with the Bluetooth LE API
  */
+
+/**
+ * TODO: device onclkick connect to device
+ * TODO: connect data fiel with text view
+ * TODO: button send onclick method send data from data field
+ */
 public class DebugActivity extends AppCompatActivity {
 
     private final static String TAG = DebugActivity.class.getSimpleName();
@@ -43,6 +50,7 @@ public class DebugActivity extends AppCompatActivity {
     private TextView mTerminal;
     private String mDeviceName;
     private String mDeviceAddress;
+    private Button mButton;
 
     private ExpandableListView mGattServicesList;
     private BluetoothService mBluetoothService;
@@ -67,6 +75,7 @@ public class DebugActivity extends AppCompatActivity {
             }
             // Automatically connects to the device upon successful start-up initialization.
             mBluetoothService.connect(mDeviceAddress);
+
         }
 
         @Override
@@ -156,6 +165,17 @@ public class DebugActivity extends AppCompatActivity {
         mGattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
         mGattServicesList.setOnChildClickListener(servicesListClickListner);
         mTerminal = findViewById(R.id.tv_terminal);
+        mDataField = findViewById(R.id.et_dbg_send);
+        mButton = findViewById(R.id.btn_dbg_send);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: call method to send BLE Data
+                String data = mDataField.getText().toString();
+            }
+        });
+
+
 
         Intent gattServiceIntent = new Intent(this, BluetoothService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
@@ -239,6 +259,17 @@ public class DebugActivity extends AppCompatActivity {
                         LIST_NAME, SampleGattAttributes.lookup(uuid, unknownCharaString));
                 currentCharaData.put(LIST_UUID, uuid);
                 gattCharacteristicGroupData.add(currentCharaData);
+                /**
+                 * Test
+                 */
+                if(uuid.equals("00000000-0000-0000-0000-00000001")){
+                    String originalString = "560D0F0600F0AA";
+                    byte[] b = hexStringToByteArray(originalString);
+                    gattCharacteristic.setValue(b);
+                }
+                /**
+                 * endtest
+                 */
             }
             mGattCharacteristics.add(charas);
             gattCharacteristicData.add(gattCharacteristicGroupData);
@@ -265,6 +296,22 @@ public class DebugActivity extends AppCompatActivity {
         intentFilter.addAction(BluetoothService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothService.ACTION_DATA_AVAILABLE);
         return intentFilter;
+    }
+
+    /**
+     * TODO: method to create gatt service characteristic and write
+     *
+     */
+
+    //method to convert string to byte arr
+    private static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
     }
 
 }

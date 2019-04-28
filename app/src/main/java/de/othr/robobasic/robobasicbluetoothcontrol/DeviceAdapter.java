@@ -182,5 +182,4 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         mDevices.clear();
     }
 
-
 }

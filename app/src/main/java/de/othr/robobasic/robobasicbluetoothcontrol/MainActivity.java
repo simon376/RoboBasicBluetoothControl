@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.rv_main_devices);
          // setup devicelist
         //TODO: for debugging only
-        createSampleData();
+        //createSampleData();
 
         mDeviceListAdapter = new DeviceAdapter(mDevices);
         mDeviceListAdapter.setOnItemClickListener(new DeviceAdapter.OnItemClickListener() {
