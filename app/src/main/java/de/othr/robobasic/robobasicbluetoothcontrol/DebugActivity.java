@@ -58,7 +58,7 @@ public class DebugActivity extends AppCompatActivity {
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
 
     private boolean mConnected = false;
-    private BluetoothGattCharacteristic mNotifyCharacteristic;
+    private BluetoothGattCharacteristic mNotifyCharacteristic, mWriteCharacteristic;
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
@@ -102,7 +102,7 @@ public class DebugActivity extends AppCompatActivity {
                 updateConnectionState(R.string.disconnected);
             } else if (BluetoothService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
-                //TODO
+                //TODO: check for write property
                 displayGattServices(mBluetoothService.getSupportedGattServices());
             } else if (BluetoothService.ACTION_DATA_AVAILABLE.equals(action)) {
                 //TODO: display received message
@@ -139,6 +139,9 @@ public class DebugActivity extends AppCompatActivity {
                             mBluetoothService.setCharacteristicNotification(
                                     characteristic, true);
                         }
+                        if ((charaProp | BluetoothGattCharacteristic.PROPERTY_WRITE) > 0) {
+                            mWriteCharacteristic = characteristic;
+                        }
                         return true;
                     }
                     return false;
@@ -172,6 +175,7 @@ public class DebugActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //TODO: call method to send BLE Data
                 String data = mDataField.getText().toString();
+                writeBLE(data);
             }
         });
 
@@ -259,17 +263,6 @@ public class DebugActivity extends AppCompatActivity {
                         LIST_NAME, SampleGattAttributes.lookup(uuid, unknownCharaString));
                 currentCharaData.put(LIST_UUID, uuid);
                 gattCharacteristicGroupData.add(currentCharaData);
-                /**
-                 * Test
-                 */
-                if(uuid.equals("00000000-0000-0000-0000-00000001")){
-                    String originalString = "560D0F0600F0AA";
-                    byte[] b = hexStringToByteArray(originalString);
-                    gattCharacteristic.setValue(b);
-                }
-                /**
-                 * endtest
-                 */
             }
             mGattCharacteristics.add(charas);
             gattCharacteristicData.add(gattCharacteristicGroupData);
@@ -302,6 +295,13 @@ public class DebugActivity extends AppCompatActivity {
      * TODO: method to create gatt service characteristic and write
      *
      */
+    private void writeBLE(String data){
+        if(mWriteCharacteristic != null){
+            mWriteCharacteristic.setValue(data);
+            mBluetoothService.writeCharacteristic(mWriteCharacteristic);
+        }
+    }
+
 
     //method to convert string to byte arr
     private static byte[] hexStringToByteArray(String s) {
