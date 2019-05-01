@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2b639ebb45f816991be9bc30e95c6c49",
+    "identityHash": "8bcbc3b624254de5cb56bc091db1e5e6",
     "entities": [
       {
         "tableName": "Move",
@@ -38,7 +38,7 @@
       },
       {
         "tableName": "MoveSequence",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `move_list` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -49,6 +49,12 @@
           {
             "fieldPath": "name",
             "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "timedMoveList",
+            "columnName": "move_list",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -65,7 +71,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"2b639ebb45f816991be9bc30e95c6c49\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8bcbc3b624254de5cb56bc091db1e5e6\")"
     ]
   }
 }

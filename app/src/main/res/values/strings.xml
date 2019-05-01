@@ -27,5 +27,6 @@
     <string name="unknown_service">Unknown service</string>
     <string name="bluetooth_class">class</string>
     <string name="title_activity_move_list">MoveListActivity</string>
+    <string name="placeholder">There\'s nothing to see here. please leave</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package de.othr.robobasic.robobasicbluetoothcontrol;
+package de.othr.robobasic.robobasicbluetoothcontrol.data;
 
 import android.app.Application;
 import android.os.AsyncTask;
@@ -7,11 +7,6 @@ import java.util.List;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import de.othr.robobasic.robobasicbluetoothcontrol.data.AppDatabase;
-import de.othr.robobasic.robobasicbluetoothcontrol.data.Move;
-import de.othr.robobasic.robobasicbluetoothcontrol.data.MoveDao;
-import de.othr.robobasic.robobasicbluetoothcontrol.data.MoveSequence;
-import de.othr.robobasic.robobasicbluetoothcontrol.data.MoveSequenceDao;
 
 /**
  * Repository handling the work with products and comments.
@@ -92,6 +87,24 @@ public class DataRepository {
         @Override
         protected Void doInBackground(final Move... params) {
             mAsyncTaskDao.insert(params[0]);
+            return null;
+        }
+    }
+
+    public void insert (MoveSequence moveSequence) {
+        new insertSequenceAsyncTask(mMoveSequenceDao).execute(moveSequence);
+    }
+
+    private static class insertSequenceAsyncTask extends AsyncTask<MoveSequence, Void, Void> {
+        private MoveSequenceDao mAsyncTaskDao;
+
+        insertSequenceAsyncTask(MoveSequenceDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final MoveSequence... params) {
+            mAsyncTaskDao.insertAll(params);
             return null;
         }
     }

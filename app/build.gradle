@@ -36,13 +36,16 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha5'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation "com.google.android.material:material:$material_version"
     testImplementation 'junit:junit:4.13-beta-2'
     androidTestImplementation 'androidx.test:runner:1.2.0-alpha04'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha04'
     implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha04'
+
+    // --- GSON (De-)serialization
+    implementation 'com.google.code.gson:gson:2.8.5'
 
     // --- Room components ---
     implementation "androidx.room:room-runtime:$room_version"

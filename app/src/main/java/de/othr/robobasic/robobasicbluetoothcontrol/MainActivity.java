@@ -24,9 +24,15 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.othr.robobasic.robobasicbluetoothcontrol.adapters.DeviceAdapter;
+
 /**
  * MainActivity starts search for Bluetooth devices and shows them in a RecyclerView,
  * connect to one by clicking on it
+ *
+ *
+ * in the future this will only be shown once as a splash-screen type of thing and movelistactivity
+ * should be the entrypoint of the app
  */
 public class MainActivity extends AppCompatActivity {
 
