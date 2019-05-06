@@ -18,34 +18,45 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_dbg_send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/send"
-        app:layout_constraintStart_toEndOf="@+id/til_dbg_send"
-        app:layout_constraintTop_toBottomOf="@+id/include" />
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_dbg_send"
-        android:layout_width="227dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/send_info"
+    <LinearLayout
+        android:id="@+id/ll_dbg"
+        android:layout_width="216dp"
+        android:layout_height="126dp"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include">
+        app:layout_constraintTop_toBottomOf="@id/include">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_dbg_send"
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_dbg_send"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@tools:sample/lorem" />
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/send"
+            app:layout_constraintStart_toEndOf="@+id/til_dbg_send"
+            app:layout_constraintTop_toTopOf="@+id/til_dbg_send" />
 
-    </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_dbg_send"
+            android:layout_width="227dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:hint="@string/send_info"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/include">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_dbg_send"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="@tools:sample/lorem" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_dbg_info"
@@ -56,7 +67,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_dbg_send" />
+        app:layout_constraintTop_toBottomOf="@id/ll_dbg" />
 
     <!-- TODO: make scrollable -->
     <TextView
@@ -79,14 +90,30 @@
         app:layout_constraintVertical_bias="0.902"
         tools:text="17/04/19 15:03:00 | this is a message from RoboNova" />
 
+    <!-- TODO: Disconnect Button should actually disconnect device and go back to "Main"Activity
+                Add another Button to accept and return to MoveListActivity -->
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dbg_disconnect"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:text="@string/disconnect"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        android:onClick="disconnectDevice"
+        app:layout_constraintBottom_toTopOf="@id/btn_dbg_return"
+        app:layout_constraintEnd_toEndOf="@id/btn_dbg_return"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+    android:id="@+id/btn_dbg_return"
+    android:layout_width="180dp"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="32dp"
+    android:text="@string/return_text"
+    android:onClick="returnToMoveList"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

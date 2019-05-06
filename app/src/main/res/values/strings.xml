@@ -28,5 +28,6 @@
     <string name="bluetooth_class">class</string>
     <string name="title_activity_move_list">MoveListActivity</string>
     <string name="placeholder">There\'s nothing to see here. please leave</string>
+    <string name="return_text">return</string>
 
 </resources>

@@ -18,6 +18,7 @@ import android.text.Layout;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
@@ -45,6 +46,9 @@ public class DebugActivity extends AppCompatActivity {
     private String mDeviceName;
     private String mDeviceAddress;
 
+    private Button mDisconnectButton;
+    private Button mReturnButton;
+
     private ExpandableListView mGattServicesList;
     private BluetoothService mBluetoothService;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
@@ -57,6 +61,7 @@ public class DebugActivity extends AppCompatActivity {
     private final String LIST_UUID = "UUID";
 
     // Code to manage Service lifecycle.
+    //TODO: Stay connected outside of this activity
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -94,10 +99,8 @@ public class DebugActivity extends AppCompatActivity {
                 updateConnectionState(R.string.disconnected);
             } else if (BluetoothService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
-                //TODO
                 displayGattServices(mBluetoothService.getSupportedGattServices());
             } else if (BluetoothService.ACTION_DATA_AVAILABLE.equals(action)) {
-                //TODO: display received message
                 displayData(intent.getStringExtra(BluetoothService.EXTRA_DATA));
             }
         }
@@ -158,6 +161,10 @@ public class DebugActivity extends AppCompatActivity {
         mGattServicesList.setOnChildClickListener(servicesListClickListner);
         mTerminal = findViewById(R.id.tv_terminal);
         mTerminal.setMovementMethod(new ScrollingMovementMethod());
+
+        mDisconnectButton = findViewById(R.id.btn_dbg_disconnect);
+        //TODO: send data button? -> main branch
+        mReturnButton = findViewById(R.id.btn_dbg_return);
 
         Intent gattServiceIntent = new Intent(this, BluetoothService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
@@ -269,4 +276,18 @@ public class DebugActivity extends AppCompatActivity {
         return intentFilter;
     }
 
+    public void returnToMoveList(View view) {
+        //open MoveListActivity
+        //TODO: backbuttonbehaviour ?
+        // Stop Searching? is it already stopped? idk
+        final Intent intent = new Intent(DebugActivity.this, MoveListActivity.class);
+        startActivity(intent);
+    }
+
+    //TODO
+    public void disconnectDevice(View view) {
+        // TODO: make sure connection stays active until explicitly disconnected.
+        //  so we can still send data in different activity (movelistactivity)..
+
+    }
 }

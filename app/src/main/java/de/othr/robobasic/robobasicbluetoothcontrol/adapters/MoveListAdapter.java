@@ -23,7 +23,7 @@ import de.othr.robobasic.robobasicbluetoothcontrol.data.MoveSequence;
  */
 //TODO: Moves and MoveSequences should either be separated or Inherit from a common base class
 // I don't know if this ListItem-Inheritance-thingy works
-// it doesn't. the whole list gets overriden by which ever part changes (Move or MoveSequence)
+// it doesn't. the whole list gets overridden by which ever part changes (Move or MoveSequence)
 
 public class MoveListAdapter extends RecyclerView.Adapter<MoveListAdapter.ViewHolder> {
 

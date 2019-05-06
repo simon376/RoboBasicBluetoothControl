@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         mBluetoothAdapter = bluetoothManager.getAdapter();
         mBluetoothScanner = mBluetoothAdapter.getBluetoothLeScanner();
 
+        //TODO: Add additional AlertDialog for Location ? if needed
+
         // Ensures Bluetooth is available on the device and it is enabled. If not,
         // displays a dialog requesting user permission to enable Bluetooth.
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
@@ -201,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Device scan callback.
-    // TODO implement callback --> add them to a listview and show them for the user to select
     private ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {

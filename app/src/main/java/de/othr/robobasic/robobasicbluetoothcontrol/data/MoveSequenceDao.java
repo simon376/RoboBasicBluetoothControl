@@ -14,7 +14,7 @@ import androidx.room.Update;
 public interface MoveSequenceDao {
 
     @Query("SELECT * FROM moveSequence")
-    LiveData<List<MoveSequence>> getAll();    // wird verwendet in der MoveList-Activity (TODO)
+    LiveData<List<MoveSequence>> getAll();
 
     @Query("SELECT * FROM moveSequence WHERE id IN (:moveSequenceIds)")
     List<MoveSequence> getAllByIds(int[] moveSequenceIds);
