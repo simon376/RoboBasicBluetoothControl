@@ -26,5 +26,9 @@
     <string name="unknown_characteristic">Unknown characteristic</string>
     <string name="unknown_service">Unknown service</string>
     <string name="bluetooth_class">class</string>
+    <string name="loading_shared_prefs">Trying to load saved data from SharedPreferences…</string>
 
+    <!-- shared preferences -->
+    <string name="preference_file_key">de.othr.robobasic.robobasicbluetoothcontrol.PREFERENCE_FILE_KEY</string>
+    <string name="saved_mac_address_key">de.othr.robobasic.robobasicbluetoothcontrol.MAC_ADDRESS_KEY</string>
 </resources>
