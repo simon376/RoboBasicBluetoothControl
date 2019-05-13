@@ -29,5 +29,7 @@
     <string name="title_activity_move_list">MoveListActivity</string>
     <string name="placeholder">There\'s nothing to see here. please leave</string>
     <string name="return_text">return</string>
+    <string name="bluetooth_service_connected">connected to bluetooth service</string>
+    <string name="bluetooth_service_disconnected">bluetooth service disconnected</string>
 
 </resources>

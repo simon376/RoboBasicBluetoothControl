@@ -281,6 +281,8 @@ public class DebugActivity extends AppCompatActivity {
         //TODO: backbuttonbehaviour ?
         // Stop Searching? is it already stopped? idk
         final Intent intent = new Intent(DebugActivity.this, MoveListActivity.class);
+        intent.putExtra(DebugActivity.EXTRAS_DEVICE_NAME, mDeviceName);
+        intent.putExtra(DebugActivity.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
         startActivity(intent);
     }
 

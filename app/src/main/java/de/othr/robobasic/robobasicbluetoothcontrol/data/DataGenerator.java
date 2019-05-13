@@ -28,6 +28,7 @@ class DataGenerator {
         return moves;
     }
 
+    @Deprecated
     static List<MoveSequence> generateMoveSequences(final List<Move> moves){
         List<MoveSequence> sequences = new ArrayList<>();
         int n = moves.size();

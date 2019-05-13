@@ -1,6 +1,7 @@
 package de.othr.robobasic.robobasicbluetoothcontrol.data;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = buildDatabase(context.getApplicationContext());
+                    INSTANCE.setDatabaseCreated();
                 }
             }
         }
@@ -55,16 +57,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
-
-                        AppDatabase database = AppDatabase.getInstance(context);
-
-                        List<Move> moves = DataGenerator.generateMoves();
-                        List<MoveSequence> moveSequences = DataGenerator.generateMoveSequences(moves);
-
-                        insertData(database, moves, moveSequences);
-
-                        //notify that the database was created and it's ready to be used
-                        database.setDatabaseCreated();
+                        new PopulateDbAsync(INSTANCE).execute();
                     }
                 })
                 .build();
@@ -87,11 +80,40 @@ public abstract class AppDatabase extends RoomDatabase {
                                    final List<MoveSequence> moveSequences) {
         database.runInTransaction(() -> {
             database.moveDao().insertAll(moves.toArray(new Move[0]));
-            database.moveSequenceDao().insertAll(moveSequences.toArray(new MoveSequence[0]));
+            //database.moveSequenceDao().insertAll(moveSequences.toArray(new MoveSequence[0]));
         });
     }
 
     public LiveData<Boolean> getDatabaseCreated() {
         return mIsDatabaseCreated;
+    }
+
+
+
+    /**
+     * Populate the database in the background.
+     * If you want to start with more words, just add them.
+     */
+    private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
+
+        private final MoveDao mDao;
+        private AppDatabase db;
+
+        PopulateDbAsync(AppDatabase db) {
+            mDao = db.moveDao();
+            this.db = db;
+        }
+
+        @Override
+        protected Void doInBackground(final Void... params) {
+            // Start the app with a clean database every time.
+            // Not needed if you only populate on creation.
+            mDao.deleteAll();
+            List<Move> moves = DataGenerator.generateMoves();
+            mDao.insertAll(moves.toArray(new Move[0]));
+            db.setDatabaseCreated();
+
+            return null;
+        }
     }
 }

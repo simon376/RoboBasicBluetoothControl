@@ -39,4 +39,7 @@ public interface MoveDao {
     @Delete
     void delete(Move... moves);
 
+    @Query("DELETE FROM move")
+    void deleteAll();
+
 }

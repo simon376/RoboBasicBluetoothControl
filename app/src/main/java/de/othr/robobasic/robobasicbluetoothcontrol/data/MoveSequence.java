@@ -6,7 +6,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-
+// !! Wird vorerst nicht benutzt! Kann später verwendet werden, sobald die Basics funktionieren!
+@Deprecated
 @Entity
 public class MoveSequence extends ListItem{
 

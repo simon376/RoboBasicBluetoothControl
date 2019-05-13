@@ -17,7 +17,7 @@ public class MyViewModel extends AndroidViewModel {
     private final MediatorLiveData<List<Move>> mObservableMoves;
 
     // MediatorLiveData can observe other LiveData objects and react on their emissions.
-    private final MediatorLiveData<List<MoveSequence>> mObservableMoveSequences;
+ //   private final MediatorLiveData<List<MoveSequence>> mObservableMoveSequences;
 
     DataRepository mRepository;
 
@@ -26,10 +26,10 @@ public class MyViewModel extends AndroidViewModel {
         super(application);
 
         mObservableMoves = new MediatorLiveData<>();
-        mObservableMoveSequences = new MediatorLiveData<>();
+    //    mObservableMoveSequences = new MediatorLiveData<>();
         // set by default null, until we get data from the database.
         mObservableMoves.setValue(null);
-        mObservableMoveSequences.setValue(null);
+     //   mObservableMoveSequences.setValue(null);
 
         mRepository = DataRepository.getInstance(application);
 
@@ -38,7 +38,7 @@ public class MyViewModel extends AndroidViewModel {
 
         // observe the changes of the moves from the database and forward them
         mObservableMoves.addSource(moves, mObservableMoves::setValue);
-        mObservableMoveSequences.addSource(moveSequences, mObservableMoveSequences::setValue);
+    //    mObservableMoveSequences.addSource(moveSequences, mObservableMoveSequences::setValue);
     }
 
     /**
@@ -50,10 +50,14 @@ public class MyViewModel extends AndroidViewModel {
 
     public void insert(Move move) { mRepository.insert(move); }
 
+    public LiveData<Move> getMove(int moveID) { return mRepository.loadMove(moveID);}
+
+ /*   @Deprecated
     public LiveData<List<MoveSequence>> getMoveSequences() {
         return mObservableMoveSequences;
     }
 
+    @Deprecated
     public void insert(MoveSequence moveSequence) { mRepository.insert(moveSequence); }
-
+*/
 }

@@ -25,10 +25,10 @@ public class DataRepository {
     private DataRepository(Application application) {
         mDatabase = AppDatabase.getInstance(application);
         mMoveDao = mDatabase.moveDao();
-        mMoveSequenceDao = mDatabase.moveSequenceDao();
+//        mMoveSequenceDao = mDatabase.moveSequenceDao();
 
         mObservableMoves = new MediatorLiveData<>();
-        mObservableMoveSequences = new MediatorLiveData<>();
+//        mObservableMoveSequences = new MediatorLiveData<>();
 
         // MediatorLiveData zum manuellen Vorbefüllen der Daten
 
@@ -39,12 +39,12 @@ public class DataRepository {
                     }
                 });
 
-        mObservableMoveSequences.addSource(mDatabase.moveSequenceDao().getAll(),
-                moveSequences -> {
-                    if(mDatabase.getDatabaseCreated().getValue() != null) {
-                        mObservableMoveSequences.postValue(moveSequences);
-                    }
-                });
+//        mObservableMoveSequences.addSource(mDatabase.moveSequenceDao().getAll(),
+//                moveSequences -> {
+//                    if(mDatabase.getDatabaseCreated().getValue() != null) {
+//                        mObservableMoveSequences.postValue(moveSequences);
+//                    }
+//                });
     }
 
     public static DataRepository getInstance(Application application) {
