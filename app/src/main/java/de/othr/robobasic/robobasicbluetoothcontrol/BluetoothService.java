@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
@@ -50,9 +49,27 @@ public class BluetoothService extends Service {
     public final static String EXTRA_DATA =
             "de.othr.robobasic.EXTRA_DATA";
 
-    //TODO: sample GATT Characteristics data
-    public final static UUID UUID_HEART_RATE_MEASUREMENT =
-            UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
+    //TODO: RoboNova Standardwerte für Characteristics / Services eintragen
+    public final static UUID UUID_ROBONOVA =
+            UUID.fromString(RoboNovaGattAttributes.ROBONOVA_CHARACTERISTIC);
+
+
+    private final IBinder mBinder = new LocalBinder();
+
+    /**
+     * Class used for the client Binder.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with IPC.
+     */
+    class LocalBinder extends Binder {
+        // Return this instance of BluetoothService so clients can call public methods
+        BluetoothService getService() {
+            return BluetoothService.this;
+        }
+    }
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
 
 
     // Implements callback methods for GATT events that the app cares about.  For example,
@@ -126,45 +143,19 @@ public class BluetoothService extends Service {
         //TODO: Parse the information received
         // TODO: Find out which GATT Characteristics are used by the bluetooth controller by default
 
-        // This is special handling for the Heart Rate Measurement profile.  Data parsing is
-        // carried out as per profile specifications:
-        // http://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.heart_rate_measurement.xml
-        if (UUID_HEART_RATE_MEASUREMENT.equals(characteristic.getUuid())) {
-            int flag = characteristic.getProperties();
-            int format = -1;
-            if ((flag & 0x01) != 0) {
-                format = BluetoothGattCharacteristic.FORMAT_UINT16;
-                Log.d(TAG, "Heart rate format UINT16.");
-            } else {
-                format = BluetoothGattCharacteristic.FORMAT_UINT8;
-                Log.d(TAG, "Heart rate format UINT8.");
-            }
-            final int heartRate = characteristic.getIntValue(format, 1);
-            Log.d(TAG, String.format("Received heart rate: %d", heartRate));
-            intent.putExtra(EXTRA_DATA, String.valueOf(heartRate));
-        } else {
-            // For all other profiles, writes the data formatted in HEX.
-            final byte[] data = characteristic.getValue();
-            if (data != null && data.length > 0) {
-                final StringBuilder stringBuilder = new StringBuilder(data.length);
-                for(byte byteChar : data)
-                    stringBuilder.append(String.format("%02X ", byteChar));
-                intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
-            }
+        // For all other profiles, writes the data formatted in HEX.
+        final byte[] data = characteristic.getValue();
+        if (data != null && data.length > 0) {
+            final StringBuilder stringBuilder = new StringBuilder(data.length);
+            for(byte byteChar : data)
+                stringBuilder.append(String.format("%02X ", byteChar));
+            intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
         }
+
         sendBroadcast(intent);
     }
 
-    public class LocalBinder extends Binder {
-        BluetoothService getService() {
-            return BluetoothService.this;
-        }
-    }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
-    }
 
     @Override
     public boolean onUnbind(Intent intent) {
@@ -175,7 +166,6 @@ public class BluetoothService extends Service {
         return super.onUnbind(intent);
     }
 
-    private final IBinder mBinder = new LocalBinder();
 
     /**
      * Initializes a reference to the local Bluetooth adapter.
@@ -219,7 +209,7 @@ public class BluetoothService extends Service {
         }
 
         // Previously connected device.  Try to reconnect.
-        if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
+        if (address.equals(mBluetoothDeviceAddress)
                 && mBluetoothGatt != null) {
             Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
             if (mBluetoothGatt.connect()) {
@@ -312,13 +302,6 @@ public class BluetoothService extends Service {
         }
         mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
 
-        // This is specific to Heart Rate Measurement.
-        if (UUID_HEART_RATE_MEASUREMENT.equals(characteristic.getUuid())) {
-            BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
-                    UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
-            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-            mBluetoothGatt.writeDescriptor(descriptor);
-        }
     }
 
     /**

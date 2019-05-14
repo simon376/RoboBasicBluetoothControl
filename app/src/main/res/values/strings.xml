@@ -26,5 +26,11 @@
     <string name="unknown_characteristic">Unknown characteristic</string>
     <string name="unknown_service">Unknown service</string>
     <string name="bluetooth_class">class</string>
+    <string name="title_activity_move_list">MoveListActivity</string>
+    <string name="placeholder">There\'s nothing to see here. please leave</string>
+    <string name="return_text">return</string>
+    <string name="bluetooth_service_connected">connected to bluetooth service</string>
+    <string name="bluetooth_service_disconnected">bluetooth service disconnected</string>
+    <string name="default_move_name">Default Move(Sequence) Name</string>
 
 </resources>
