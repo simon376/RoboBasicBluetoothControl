@@ -1,8 +1,6 @@
 package de.othr.robobasic.robobasicbluetoothcontrol;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
@@ -15,7 +13,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.text.Layout;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -33,12 +31,6 @@ import java.util.List;
  *
  * the Activity communicates with  {@code BluetoothService} which in turn interacts with the Bluetooth LE API
  */
-
-/**
- * TODO: device onclkick connect to device
- * TODO: connect data fiel with text view
- * TODO: button send onclick method send data from data field
- */
 public class DebugActivity extends AppCompatActivity {
 
     private final static String TAG = DebugActivity.class.getSimpleName();
@@ -47,26 +39,28 @@ public class DebugActivity extends AppCompatActivity {
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
     private TextView mConnectionState;
-    private TextView mDataField;
     private TextView mTerminal;
     private String mDeviceName;
     private String mDeviceAddress;
     private Button mButton;
+    private TextView mDataField;
+
+    private boolean mConnected;
 
     private SharedPreferences mSharedPreferences;
 
     private ExpandableListView mGattServicesList;
     private BluetoothService mBluetoothService;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
-            new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
+            new ArrayList<>();
 
-    private boolean mConnected = false;
     private BluetoothGattCharacteristic mNotifyCharacteristic, mWriteCharacteristic;
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
 
     // Code to manage Service lifecycle.
+    //TODO: Stay connected outside of this activity
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -78,7 +72,6 @@ public class DebugActivity extends AppCompatActivity {
             }
             // Automatically connects to the device upon successful start-up initialization.
             mBluetoothService.connect(mDeviceAddress);
-
         }
 
         @Override
@@ -101,14 +94,11 @@ public class DebugActivity extends AppCompatActivity {
                 mConnected = true;
                 updateConnectionState(R.string.connected);
             } else if (BluetoothService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                mConnected = false;
                 updateConnectionState(R.string.disconnected);
             } else if (BluetoothService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
-                //TODO: check for write property
                 displayGattServices(mBluetoothService.getSupportedGattServices());
             } else if (BluetoothService.ACTION_DATA_AVAILABLE.equals(action)) {
-                //TODO: display received message
                 displayData(intent.getStringExtra(BluetoothService.EXTRA_DATA));
             }
         }
@@ -151,10 +141,6 @@ public class DebugActivity extends AppCompatActivity {
                 }
             };
 
-    private void clearUI() {
-        mGattServicesList.setAdapter((SimpleExpandableListAdapter) null);
-        //todo: clear recyclerview?
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,9 +160,14 @@ public class DebugActivity extends AppCompatActivity {
         // Sets up UI references.
         mConnectionState = findViewById(R.id.connection_state);
         ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
-        mGattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
+        mGattServicesList = findViewById(R.id.gatt_services_list);
         mGattServicesList.setOnChildClickListener(servicesListClickListner);
         mTerminal = findViewById(R.id.tv_terminal);
+        mTerminal.setMovementMethod(new ScrollingMovementMethod());
+
+        Button disconnectButton = findViewById(R.id.btn_dbg_disconnect);
+        //TODO: send data button? -> main branch
+        Button returnButton = findViewById(R.id.btn_dbg_return);
         mDataField = findViewById(R.id.et_dbg_send);
         mButton = findViewById(R.id.btn_dbg_send);
         mButton.setOnClickListener(new View.OnClickListener() {
@@ -220,16 +211,10 @@ public class DebugActivity extends AppCompatActivity {
     }
 
     private void updateConnectionState(final int resourceId) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mConnectionState.setText(resourceId);
-            }
-        });
+        runOnUiThread(() -> mConnectionState.setText(resourceId));
     }
 
     private void displayData(String data) {
-        //TODO: display message in output terminal
         if (data != null) {
             mTerminal.append(("\n" + data));
         }
@@ -239,37 +224,37 @@ public class DebugActivity extends AppCompatActivity {
     // on the UI.
     private void displayGattServices(List<BluetoothGattService> gattServices) {
         if (gattServices == null) return;
-        String uuid = null;
+        String uuid;
         String unknownServiceString = getResources().getString(R.string.unknown_service);
         String unknownCharaString = getResources().getString(R.string.unknown_characteristic);
-        ArrayList<HashMap<String, String>> gattServiceData = new ArrayList<HashMap<String, String>>();
+        ArrayList<HashMap<String, String>> gattServiceData = new ArrayList<>();
         ArrayList<ArrayList<HashMap<String, String>>> gattCharacteristicData
-                = new ArrayList<ArrayList<HashMap<String, String>>>();
-        mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
+                = new ArrayList<>();
+        mGattCharacteristics = new ArrayList<>();
 
         // Loops through available GATT Services.
         for (BluetoothGattService gattService : gattServices) {
-            HashMap<String, String> currentServiceData = new HashMap<String, String>();
+            HashMap<String, String> currentServiceData = new HashMap<>();
             uuid = gattService.getUuid().toString();
             currentServiceData.put(
-                    LIST_NAME, SampleGattAttributes.lookup(uuid, unknownServiceString));
+                    LIST_NAME, RoboNovaGattAttributes.lookup(uuid, unknownServiceString));
             currentServiceData.put(LIST_UUID, uuid);
             gattServiceData.add(currentServiceData);
 
             ArrayList<HashMap<String, String>> gattCharacteristicGroupData =
-                    new ArrayList<HashMap<String, String>>();
+                    new ArrayList<>();
             List<BluetoothGattCharacteristic> gattCharacteristics =
                     gattService.getCharacteristics();
             ArrayList<BluetoothGattCharacteristic> charas =
-                    new ArrayList<BluetoothGattCharacteristic>();
+                    new ArrayList<>();
 
             // Loops through available Characteristics.
             for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
                 charas.add(gattCharacteristic);
-                HashMap<String, String> currentCharaData = new HashMap<String, String>();
+                HashMap<String, String> currentCharaData = new HashMap<>();
                 uuid = gattCharacteristic.getUuid().toString();
                 currentCharaData.put(
-                        LIST_NAME, SampleGattAttributes.lookup(uuid, unknownCharaString));
+                        LIST_NAME, RoboNovaGattAttributes.lookup(uuid, unknownCharaString));
                 currentCharaData.put(LIST_UUID, uuid);
                 gattCharacteristicGroupData.add(currentCharaData);
             }
@@ -300,6 +285,21 @@ public class DebugActivity extends AppCompatActivity {
         return intentFilter;
     }
 
+    public void returnToMoveList(View view) {
+        //open MoveListActivity
+        //TODO: backbuttonbehaviour ?
+        // Stop Searching? is it already stopped? idk
+        final Intent intent = new Intent(DebugActivity.this, MoveListActivity.class);
+        intent.putExtra(DebugActivity.EXTRAS_DEVICE_NAME, mDeviceName);
+        intent.putExtra(DebugActivity.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
+        startActivity(intent);
+    }
+
+    public void disconnectDevice(View view) {
+        // TODO: make sure connection stays active until explicitly disconnected.
+        //  so we can still send data in different activity (movelistactivity)..
+        Log.d(TAG, "should disconnect device in the future");
+    }
     /**
      * TODO: method to create gatt service characteristic and write
      *
@@ -309,18 +309,6 @@ public class DebugActivity extends AppCompatActivity {
             mWriteCharacteristic.setValue(data);
             mBluetoothService.writeCharacteristic(mWriteCharacteristic);
         }
-    }
-
-
-    //method to convert string to byte arr
-    private static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i + 1), 16));
-        }
-        return data;
     }
 
 }

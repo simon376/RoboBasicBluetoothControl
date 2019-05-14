@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -24,26 +25,33 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.othr.robobasic.robobasicbluetoothcontrol.adapters.DeviceAdapter;
+
 /**
  * MainActivity starts search for Bluetooth devices and shows them in a RecyclerView,
  * connect to one by clicking on it
+ *
+ *
+ * in the future this will only be shown once as a splash-screen type of thing and movelistactivity
+ * should be the entrypoint of the app
  */
 public class MainActivity extends AppCompatActivity {
+
+
+    private final static String TAG = MainActivity.class.getSimpleName();
 
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothLeScanner mBluetoothScanner;
     private Handler mHandler;
     private DeviceAdapter mDeviceListAdapter;
 
-    private Button mStartButton;
     private TextView mInfoTextView;
-    private RecyclerView mRecyclerView;
 
     // Stops scanning after 10 seconds.
     private static final long   SCAN_PERIOD = 10000;
     private static final int    REQUEST_ENABLE_BT = 1;
 
-    ArrayList<BluetoothDevice> mDevices = new ArrayList<>();
+    private final ArrayList<BluetoothDevice> mDevices = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         mBluetoothAdapter = bluetoothManager.getAdapter();
         mBluetoothScanner = mBluetoothAdapter.getBluetoothLeScanner();
 
+        //TODO: Add additional AlertDialog for Location ? if needed
+
         // Ensures Bluetooth is available on the device and it is enabled. If not,
         // displays a dialog requesting user permission to enable Bluetooth.
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
@@ -64,48 +74,43 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
-        mRecyclerView = findViewById(R.id.rv_main_devices);
+        RecyclerView recyclerView = findViewById(R.id.rv_main_devices);
          // setup devicelist
-        //TODO: for debugging only
-        //createSampleData();
+
+        //for debugging only
+        createSampleData();
 
         mDeviceListAdapter = new DeviceAdapter(mDevices);
-        mDeviceListAdapter.setOnItemClickListener(new DeviceAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View itemView, int position) {
-                final BluetoothDevice device = mDevices.get(position);
-                if (device == null) return;
+        mDeviceListAdapter.setOnItemClickListener((itemView, position) -> {
+            final BluetoothDevice device = mDevices.get(position);
+            if (device == null) return;
 
-                //open DebugActivity to Connect to Device
-                final Intent intent = new Intent(MainActivity.this, DebugActivity.class);
-                intent.putExtra(DebugActivity.EXTRAS_DEVICE_NAME, device.getName());
-                intent.putExtra(DebugActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
-                startActivity(intent);
+            //open DebugActivity to Connect to Device
+            final Intent intent = new Intent(MainActivity.this, DebugActivity.class);
+            intent.putExtra(DebugActivity.EXTRAS_DEVICE_NAME, device.getName());
+            intent.putExtra(DebugActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+            startActivity(intent);
 
-                //tell MainActivity to stop scanning
-                scanDevice(false);
-            }
+            //tell MainActivity to stop scanning
+            scanDevice(false);
         });
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         RecyclerView.ItemDecoration itemDecoration = new
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(itemDecoration);
+        recyclerView.addItemDecoration(itemDecoration);
 
-        mRecyclerView.setAdapter(mDeviceListAdapter);
+        recyclerView.setAdapter(mDeviceListAdapter);
 
         mHandler = new Handler();
 
         mInfoTextView = findViewById(R.id.tv_main_info);
 
-        mStartButton = findViewById(R.id.btn_main_start_scan);
-        mStartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mInfoTextView.setVisibility(View.VISIBLE);
-                scanDevice(true);
-            }
+        Button startButton = findViewById(R.id.btn_main_start_scan);
+        startButton.setOnClickListener(v -> {
+            mInfoTextView.setVisibility(View.VISIBLE);
+            scanDevice(true);
         });
 
 
@@ -124,10 +129,12 @@ public class MainActivity extends AppCompatActivity {
                 else
                 {
                     String error = "device is null breakpoint " + address; //exception handling at its finest... lol
+                    Log.e(TAG, error);
                 }
             }
             else{
                 String error = "bluetooth address invalid breakpoint " + address;
+                Log.e(TAG, error);
             }
         }
     }
@@ -176,12 +183,9 @@ public class MainActivity extends AppCompatActivity {
     private void scanDevice(final boolean enable) {
         if (enable) {
             // Stops scanning after a pre-defined scan period.
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mBluetoothScanner.stopScan(mScanCallback);
-                  //  invalidateOptionsMenu();
-                }
+            mHandler.postDelayed(() -> {
+                mBluetoothScanner.stopScan(mScanCallback);
+              //  invalidateOptionsMenu();
             }, SCAN_PERIOD);
 
             mBluetoothScanner.startScan(mScanCallback);
@@ -195,8 +199,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Device scan callback.
-    // TODO implement callback --> add them to a listview and show them for the user to select
-    private ScanCallback mScanCallback = new ScanCallback() {
+    private final ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);

@@ -1,12 +1,8 @@
-package de.othr.robobasic.robobasicbluetoothcontrol;
+package de.othr.robobasic.robobasicbluetoothcontrol.adapters;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Debug;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +13,14 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import de.othr.robobasic.robobasicbluetoothcontrol.R;
+
 /**
 * Adapter for displaying found bluetooth le devices in a RecyclerView in the MainActivity
 */
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder> {
 
-    private List<BluetoothDevice> mDevices;
+    private final List<BluetoothDevice> mDevices;
 
     /***** Creating OnItemClickListener *****/
 
@@ -43,11 +41,11 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     // you provide access to all the views for a data item in a view holder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView mNameTextView;
-        TextView mAddressTextView;
-        TextView mClassTextView;
+        final TextView mNameTextView;
+        final TextView mAddressTextView;
+        final TextView mClassTextView;
 
-        public ViewHolder(@NonNull final View itemView) {
+        ViewHolder(@NonNull final View itemView) {
             super(itemView);
 
             mNameTextView = itemView.findViewById(R.id.tv_item_device_name);
@@ -55,15 +53,12 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             mClassTextView = itemView.findViewById(R.id.tv_item_device_class);
 
             // Setup the click listener
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Triggers click upwards to the adapter on click
-                    if (listener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            listener.onItemClick(itemView, position);
-                        }
+            itemView.setOnClickListener(v -> {
+                // Triggers click upwards to the adapter on click
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(itemView, position);
                     }
                 }
             });
@@ -86,9 +81,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
         View deviceView = inflater.inflate(R.layout.item_device, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(deviceView);
-
-        return viewHolder;
+        return new ViewHolder(deviceView);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
