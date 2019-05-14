@@ -17,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <activity android:name=".SplashScreenActivity"></activity>
         <activity android:name=".MoveListActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

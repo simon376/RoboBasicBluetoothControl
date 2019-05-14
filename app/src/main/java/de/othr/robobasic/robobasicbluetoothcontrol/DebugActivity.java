@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.method.ScrollingMovementMethod;
@@ -45,6 +46,8 @@ public class DebugActivity extends AppCompatActivity {
     private TextView mDataField;
 
     private boolean mConnected;
+
+    private SharedPreferences mSharedPreferences;
 
     private ExpandableListView mGattServicesList;
     private BluetoothService mBluetoothService;
@@ -147,6 +150,12 @@ public class DebugActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+
+        //Save selected device in SharedPreferences
+        mSharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(getString(R.string.saved_mac_address_key), mDeviceAddress);
+        editor.apply();
 
         // Sets up UI references.
         mConnectionState = findViewById(R.id.connection_state);
