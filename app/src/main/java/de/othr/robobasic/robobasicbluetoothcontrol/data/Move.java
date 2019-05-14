@@ -4,6 +4,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import de.othr.robobasic.robobasicbluetoothcontrol.R;
+
 /**
  * Move model describes a single predefined movement the robot can do.
  * fields aren't final yet.
@@ -18,11 +20,13 @@ public class Move extends ListItem {
 
     private String message; /* message sent to the robot identifying the specific move */
 
+    private int drawable;    // icon
+
     public Move(){}
 
     @Ignore
     public Move(String name, String message){
-        this.name = name; this.message = message;
+        this.name = name; this.message = message; this.drawable = R.drawable.icon_default;
     }
 
     @Override
@@ -48,5 +52,13 @@ public class Move extends ListItem {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public int getDrawable() {
+        return drawable;
+    }
+
+    public void setDrawable(int drawable) {
+        this.drawable = drawable;
     }
 }

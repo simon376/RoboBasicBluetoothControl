@@ -2,7 +2,7 @@
     <string name="app_name">RoboBasicBluetoothControl</string>
     <string name="device_name">Device Name</string>
     <string name="mac_address">MAC address</string>
-    <string name="main_info">Available BLE Devices will be shown soon. select one to connect to it. scan will be stopped once clicking on a device to connect.</string>
+    <string name="main_info">Available BLE Devices will be shown soon.\nselect one to connect to it.\nscan will be stopped once a device was selected.</string>
     <string name="debug">debug</string>
     <string name="send">send</string>
     <string name="send_info">send some data</string>
@@ -28,13 +28,15 @@
     <string name="bluetooth_class">class</string>
     <string name="loading_shared_prefs">Trying to load saved data from SharedPreferences…</string>
     <string name="title_activity_move_list">MoveListActivity</string>
-    <string name="placeholder">There\'s nothing to see here. please leave</string>
+    <string name="placeholder">There\'s nothing to see here yet. please leave.</string>
     <string name="return_text">return</string>
     <string name="bluetooth_service_connected">connected to bluetooth service</string>
     <string name="bluetooth_service_disconnected">bluetooth service disconnected</string>
-    <string name="default_move_name">Default Move(Sequence) Name</string>
+    <string name="default_move_name">Default Move Name</string>
 
     <!-- shared preferences -->
     <string name="preference_file_key">de.othr.robobasic.robobasicbluetoothcontrol.PREFERENCE_FILE_KEY</string>
     <string name="saved_mac_address_key">de.othr.robobasic.robobasicbluetoothcontrol.MAC_ADDRESS_KEY</string>
+    <string name="cont_descr_move_icon">Move Icon</string>
+    <string name="move_list">move list</string>
 </resources>
