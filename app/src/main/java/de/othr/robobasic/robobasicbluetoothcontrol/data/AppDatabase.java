@@ -97,7 +97,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
         private final MoveDao mDao;
-        private AppDatabase db;
+        private final AppDatabase db;
 
         PopulateDbAsync(AppDatabase db) {
             mDao = db.moveDao();

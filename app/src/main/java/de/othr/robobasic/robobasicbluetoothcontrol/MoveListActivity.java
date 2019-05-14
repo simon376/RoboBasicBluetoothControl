@@ -14,14 +14,11 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.othr.robobasic.robobasicbluetoothcontrol.adapters.MoveListAdapter;
-import de.othr.robobasic.robobasicbluetoothcontrol.data.ListItem;
 import de.othr.robobasic.robobasicbluetoothcontrol.data.Move;
 import de.othr.robobasic.robobasicbluetoothcontrol.viewmodels.MyViewModel;
 
@@ -32,16 +29,15 @@ public class MoveListActivity extends AppCompatActivity {
 
     private final static String TAG = MoveListActivity.class.getSimpleName();
 
-    MyViewModel mViewModel;
-    RecyclerView mRecyclerView;
-    MoveListAdapter mMoveListAdapter;
+    private MyViewModel mViewModel;
+    private RecyclerView mRecyclerView;
+    private MoveListAdapter mMoveListAdapter;
 
-    BluetoothService mBluetoothService;
-    boolean mBound = false;
+    private BluetoothService mBluetoothService;
+    private boolean mBound = false;
 
-    String mDeviceAddress;
-    String mDeviceName;
-    //TODO OnItemClickListener
+    private String mDeviceAddress;
+    private String mDeviceName;
 
 
     @Override
@@ -63,31 +59,27 @@ public class MoveListActivity extends AppCompatActivity {
         //TODO get deviceAddress from SharedPreferences or Intent-Extras (see other branch)
 
 
-        mViewModel.getMoves().observe(this, new Observer<List<Move>>() {
-            @Override
-            public void onChanged(List<Move> moves) {
-                mMoveListAdapter.setMoves(moves);
-                // this connects the Adapter to the ViewModel
-                // list of moves has changed, update the UI (recyclerView)
-            }
+        mViewModel.getMoves().observe(this, moves -> {
+            mMoveListAdapter.setMoves(moves);
+            // this connects the Adapter to the ViewModel
+            // list of moves has changed, update the UI (recyclerView)
         });
 
 
         mRecyclerView = findViewById(R.id.rv_moves_sequences);
         mMoveListAdapter = new MoveListAdapter();
-        mMoveListAdapter.setClickHandler(new MoveListAdapter.MoveListAdapterOnItemClickHandler() {
-            @Override
-            public void onItemClick(Move move) {
-                int id = move.getId();
-                Log.d(TAG, "clicked on ListItem @ id "+ String.valueOf(id));
-                //TODO onItemClickBehaviour (send message)
-                if(mBound){
-                    if(mBluetoothService != null){
-                        // writeBLE(String.valueOf(id));
-                    }
+        mMoveListAdapter.setClickHandler(move -> {
+            int id = move.getId();
+            Log.d(TAG, "clicked on ListItem @ id "+ id);
+            //TODO onItemClickBehaviour (send message)
+            if(mBound){
+                if(mBluetoothService != null){
+                    String toast = "clicked move " + move.getName();
+                    Toast.makeText(MoveListActivity.this, toast, Toast.LENGTH_SHORT).show();
+                    // writeBLE(String.valueOf(id));
                 }
-
             }
+
         });
 
         mRecyclerView.setAdapter(mMoveListAdapter);
@@ -100,7 +92,6 @@ public class MoveListActivity extends AppCompatActivity {
 
     }
 
-    //TODO: this stuff should be done once in either the Startup Splashscreen Activity or Debug ?
 
     @Override
     protected void onStart() {
@@ -129,7 +120,7 @@ public class MoveListActivity extends AppCompatActivity {
 
 
     /** Defines callbacks for service binding, passed to bindService() */
-    private ServiceConnection connection = new ServiceConnection() {
+    private final ServiceConnection connection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,

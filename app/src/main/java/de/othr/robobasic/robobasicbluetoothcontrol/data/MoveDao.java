@@ -10,6 +10,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+@SuppressWarnings("unused")
 @Dao
 public interface MoveDao {
     @Query("SELECT * FROM move")
@@ -34,7 +35,7 @@ public interface MoveDao {
     void insert(Move move);
 
     @Update
-    public void update(Move... moves);
+    void update(Move... moves);
 
     @Delete
     void delete(Move... moves);

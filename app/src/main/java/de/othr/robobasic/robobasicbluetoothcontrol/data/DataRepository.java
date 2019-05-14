@@ -16,10 +16,10 @@ public class DataRepository {
     private static DataRepository INSTANCE;
 
     private final AppDatabase mDatabase;
-    private MediatorLiveData<List<Move>> mObservableMoves;
+    private final MediatorLiveData<List<Move>> mObservableMoves;
     private MediatorLiveData<List<MoveSequence>> mObservableMoveSequences;
 
-    private MoveDao mMoveDao;
+    private final MoveDao mMoveDao;
     private MoveSequenceDao mMoveSequenceDao;
 
     private DataRepository(Application application) {
@@ -78,7 +78,7 @@ public class DataRepository {
     }
 
     private static class insertAsyncTask extends AsyncTask<Move, Void, Void> {
-        private MoveDao mAsyncTaskDao;
+        private final MoveDao mAsyncTaskDao;
 
         insertAsyncTask(MoveDao dao) {
             mAsyncTaskDao = dao;
@@ -96,7 +96,7 @@ public class DataRepository {
     }
 
     private static class insertSequenceAsyncTask extends AsyncTask<MoveSequence, Void, Void> {
-        private MoveSequenceDao mAsyncTaskDao;
+        private final MoveSequenceDao mAsyncTaskDao;
 
         insertSequenceAsyncTask(MoveSequenceDao dao) {
             mAsyncTaskDao = dao;

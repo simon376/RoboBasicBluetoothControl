@@ -19,7 +19,7 @@ public class MyViewModel extends AndroidViewModel {
     // MediatorLiveData can observe other LiveData objects and react on their emissions.
  //   private final MediatorLiveData<List<MoveSequence>> mObservableMoveSequences;
 
-    DataRepository mRepository;
+    private final DataRepository mRepository;
 
 
     public MyViewModel(Application application) {

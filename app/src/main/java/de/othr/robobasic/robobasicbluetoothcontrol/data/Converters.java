@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Converters {
+class Converters {
 
     @TypeConverter
     public static List<TimedMove> TimedMoveFromString(String value) {
@@ -21,7 +21,6 @@ public class Converters {
     @TypeConverter
     public static String TimedMoveToString(List<TimedMove> list) {
         Gson gson = new Gson();
-        String json = gson.toJson(list);
-        return json;
+        return gson.toJson(list);
     }
 }

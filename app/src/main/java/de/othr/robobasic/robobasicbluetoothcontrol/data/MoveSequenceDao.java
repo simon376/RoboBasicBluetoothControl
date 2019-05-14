@@ -30,7 +30,7 @@ public interface MoveSequenceDao {
     void insertAll(MoveSequence... moveSequences);
 
     @Update
-    public void update(MoveSequence... moveSequences);
+    void update(MoveSequence... moveSequences);
 
     @Delete
     void delete(MoveSequence... moveSequences);

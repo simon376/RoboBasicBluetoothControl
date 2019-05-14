@@ -14,11 +14,12 @@ public class Move extends ListItem {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    String name;    /* Name of the move shown in View */
+    private String name;    /* Name of the move shown in View */
 
-    String message; /* message sent to the robot identifying the specific move */
+    private String message; /* message sent to the robot identifying the specific move */
 
-    public Move(){};
+    public Move(){}
+
     @Ignore
     public Move(String name, String message){
         this.name = name; this.message = message;
@@ -37,4 +38,6 @@ public class Move extends ListItem {
     public void setId(int id) {
         this.id = id;
     }
+
+
 }

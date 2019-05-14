@@ -25,7 +25,7 @@ public class MoveSequence extends ListItem{
         return name;
     }
 
-    public MoveSequence(){};
+    public MoveSequence(){}
 
     public MoveSequence(String name, List<TimedMove> moves){
         this.name = name;
@@ -35,7 +35,7 @@ public class MoveSequence extends ListItem{
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    String name;    /* Name of the move sequence shown in View */
+    private String name;    /* Name of the move sequence shown in View */
 
     /*
      using TypeConverters and no Foreign Keys means the list of TimedMoves will just be serialized
@@ -46,6 +46,7 @@ public class MoveSequence extends ListItem{
      another using a viewmodel or sth similar
     */
     @ColumnInfo(name = "move_list")
+    private
     List<TimedMove> timedMoveList; /* list of moves to be executed by the robot for this sequence */
 
 

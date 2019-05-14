@@ -33,14 +33,14 @@ class DataGenerator {
         List<MoveSequence> sequences = new ArrayList<>();
         int n = moves.size();
         // have n moves, pick k random from those n, add random timings, put it into one sequence
-        for(int i = 0; i < SEQUENCES.length; i++){
+        for (String sequence : SEQUENCES) {
 
             List<TimedMove> timedMoves = new ArrayList<>();
 
-            int k = new Random().nextInt(n+1);  // number of moves this MoveSequence has
+            int k = new Random().nextInt(n + 1);  // number of moves this MoveSequence has
 
-            for(int j = 0; j < k; j++){
-                int index = new Random().nextInt(k+1);
+            for (int j = 0; j < k; j++) {
+                int index = new Random().nextInt(k + 1);
                 Move randomMove = moves.get(index);
 
                 int randomTiming = new Random().nextInt(10000);
@@ -49,7 +49,7 @@ class DataGenerator {
 
             }
 
-            sequences.add(new MoveSequence(SEQUENCES[i], timedMoves));
+            sequences.add(new MoveSequence(sequence, timedMoves));
         }
 
 

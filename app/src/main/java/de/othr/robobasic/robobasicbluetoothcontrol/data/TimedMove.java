@@ -1,12 +1,12 @@
 package de.othr.robobasic.robobasicbluetoothcontrol.data;
-
+@Deprecated
 public class TimedMove {
-    int timestamp;  // timestamp when this move is to be executed
-    Move move;      // which move to execute
+    private int timestamp;  // timestamp when this move is to be executed
+    private Move move;      // which move to execute
 
-    //TODO: Delete. will be replaced by wait commands. see UML diagram in gitlab
+    //To Delete. will be replaced by wait commands. see UML diagram in gitlab
 
-    public TimedMove(int timestamp, Move move){
+    TimedMove(int timestamp, Move move){
         this.timestamp = timestamp;
         this.move = move;
     }

@@ -31,5 +31,6 @@
     <string name="return_text">return</string>
     <string name="bluetooth_service_connected">connected to bluetooth service</string>
     <string name="bluetooth_service_disconnected">bluetooth service disconnected</string>
+    <string name="default_move_name">Default Move(Sequence) Name</string>
 
 </resources>
