@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothLeScanner mBluetoothScanner;
     private Handler mHandler;
     private DeviceAdapter mDeviceListAdapter;
+    RecyclerView mRecyclerView;
 
     private TextView mInfoTextView;
 
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
-        RecyclerView recyclerView = findViewById(R.id.rv_main_devices);
+         mRecyclerView = findViewById(R.id.rv_main_devices);
          // setup devicelist
 
         //for debugging only
@@ -85,23 +86,23 @@ public class MainActivity extends AppCompatActivity {
             final BluetoothDevice device = mDevices.get(position);
             if (device == null) return;
 
+            //tell MainActivity to stop scanning
+            scanDevice(false);
+
             //open DebugActivity to Connect to Device
             final Intent intent = new Intent(MainActivity.this, DebugActivity.class);
             intent.putExtra(DebugActivity.EXTRAS_DEVICE_NAME, device.getName());
             intent.putExtra(DebugActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
             startActivity(intent);
-
-            //tell MainActivity to stop scanning
-            scanDevice(false);
         });
 
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         RecyclerView.ItemDecoration itemDecoration = new
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(itemDecoration);
+        mRecyclerView.addItemDecoration(itemDecoration);
 
-        recyclerView.setAdapter(mDeviceListAdapter);
+        mRecyclerView.setAdapter(mDeviceListAdapter);
 
         mHandler = new Handler();
 
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void createSampleData() {
         String[] addresses = {"00:11:22:33:AA:BB","44:55:66:77:88:BB","00:22:44:66:AA:BB"};
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 3; i++) {
             String address = addresses[i%3];
             if(BluetoothAdapter.checkBluetoothAddress(address)){
                 BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
@@ -175,9 +176,6 @@ public class MainActivity extends AppCompatActivity {
 //        setListAdapter(mLeDeviceListAdapter);
         mDeviceListAdapter.notifyDataSetChanged();
 
-
-        scanDevice(true);
-
     }
 
     private void scanDevice(final boolean enable) {
@@ -203,21 +201,19 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
-            String name = result.getDevice().getName();
 
-            Toast.makeText(MainActivity.this, ("found device!:" + name), Toast.LENGTH_SHORT).show();
-            mDeviceListAdapter.addDevice(result.getDevice());
-            mDeviceListAdapter.notifyDataSetChanged();  //TODO NotifyItemInserted
+            // new devices will be inserted at the top
+            mDeviceListAdapter.addDevice(0, result.getDevice());
+            mRecyclerView.scrollToPosition(0);
         }
 
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
             super.onBatchScanResults(results);
             for(ScanResult result : results){
-                mDeviceListAdapter.addDevice(result.getDevice());
+                mDeviceListAdapter.addDevice(0,result.getDevice());
             }
-            mDeviceListAdapter.notifyDataSetChanged();
-
+            mRecyclerView.scrollToPosition(0);
         }
 
         @Override
