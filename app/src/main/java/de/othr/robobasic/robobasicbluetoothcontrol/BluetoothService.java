@@ -277,7 +277,7 @@ public class BluetoothService extends Service {
 
     /**
      * Requst a write on a give {@code BluetoothGattCharacteristic}. The write result is reported
-     * asynchronously through the {@code BluetoothGattCallback#onCharacteristicWrite(andorid.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)}
+     * asynchronously through the {@code BluetoothGattCallback#onCharacteristicWrite(android.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)}
      * callback.
      */
     public void writeCharacteristic(BluetoothGattCharacteristic characteristic) {

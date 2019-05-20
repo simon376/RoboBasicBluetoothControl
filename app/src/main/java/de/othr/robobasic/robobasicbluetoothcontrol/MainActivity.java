@@ -91,8 +91,6 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(DebugActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
             startActivity(intent);
 
-            //tell MainActivity to stop scanning
-            scanDevice(false);
         });
 
         recyclerView.setHasFixedSize(true);
@@ -175,9 +173,6 @@ public class MainActivity extends AppCompatActivity {
 //        setListAdapter(mLeDeviceListAdapter);
         mDeviceListAdapter.notifyDataSetChanged();
 
-
-        scanDevice(true);
-
     }
 
     private void scanDevice(final boolean enable) {
@@ -203,9 +198,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
-            String name = result.getDevice().getName();
 
-            Toast.makeText(MainActivity.this, ("found device!:" + name), Toast.LENGTH_SHORT).show();
             mDeviceListAdapter.addDevice(result.getDevice());
             mDeviceListAdapter.notifyDataSetChanged();  //TODO NotifyItemInserted
         }

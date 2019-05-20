@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +43,7 @@ public class DebugActivity extends AppCompatActivity {
     private TextView mTerminal;
     private String mDeviceName;
     private String mDeviceAddress;
-    private Button mButton;
+    private Button mSendButton;
     private TextView mDataField;
 
     private boolean mConnected;
@@ -108,7 +109,7 @@ public class DebugActivity extends AppCompatActivity {
     // demonstrates 'Read' and 'Notify' features.  See
     // http://d.android.com/reference/android/bluetooth/BluetoothGatt.html for the complete
     // list of supported characteristic features.
-    private final ExpandableListView.OnChildClickListener servicesListClickListner =
+    private final ExpandableListView.OnChildClickListener servicesListClickListener =
             new ExpandableListView.OnChildClickListener() {
                 @Override
                 public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
@@ -125,22 +126,23 @@ public class DebugActivity extends AppCompatActivity {
                                         mNotifyCharacteristic, false);
                                 mNotifyCharacteristic = null;
                             }
-                            mBluetoothService.readCharacteristic(characteristic);
+                            mBluetoothService.readCharacteristic(characteristic);   //request read async
+                            Toast.makeText(DebugActivity.this, "selected Read Characteristic, requesting read.", Toast.LENGTH_SHORT).show();
                         }
                         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
                             mNotifyCharacteristic = characteristic;
-                            mBluetoothService.setCharacteristicNotification(
-                                    characteristic, true);
+                            mBluetoothService.setCharacteristicNotification(characteristic, true);  //enable notifications
+                            Toast.makeText(DebugActivity.this, "selected Notify Characteristic, enabling notifications.", Toast.LENGTH_SHORT).show();
                         }
                         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_WRITE) > 0) {
                             mWriteCharacteristic = characteristic;
+                            Toast.makeText(DebugActivity.this, "selected Write Characteristic.", Toast.LENGTH_SHORT).show();
                         }
                         return true;
                     }
                     return false;
                 }
             };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +163,7 @@ public class DebugActivity extends AppCompatActivity {
         mConnectionState = findViewById(R.id.connection_state);
         ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
         mGattServicesList = findViewById(R.id.gatt_services_list);
-        mGattServicesList.setOnChildClickListener(servicesListClickListner);
+        mGattServicesList.setOnChildClickListener(servicesListClickListener);
         mTerminal = findViewById(R.id.tv_terminal);
         mTerminal.setMovementMethod(new ScrollingMovementMethod());
 
@@ -169,11 +171,11 @@ public class DebugActivity extends AppCompatActivity {
         //TODO: send data button? -> main branch
         Button returnButton = findViewById(R.id.btn_dbg_return);
         mDataField = findViewById(R.id.et_dbg_send);
-        mButton = findViewById(R.id.btn_dbg_send);
-        mButton.setOnClickListener(new View.OnClickListener() {
+        mSendButton = findViewById(R.id.btn_dbg_send);
+        mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: call method to send BLE Data
+                //TODO: parse text
                 String data = mDataField.getText().toString();
                 writeBLE(data);
             }
