@@ -8,6 +8,23 @@
     <!-- TODO: Fix layout (moving buttons on Keyboard open -->
 
     <include
+        layout="@layout/toolbar"/>
+
+    <!--<include-->
+        <!--layout="@layout/toolbar_debug"-->
+        <!--/>-->
+
+    <!--<ProgressBar-->
+        <!--android:id="@+id/pb_debug"-->
+        <!--style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:indeterminate="true"-->
+        <!--android:progressTint="@color/secondaryColor"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+    <include
         android:id="@+id/include"
         layout="@layout/gatt_services_characteristics"
         android:layout_width="0dp"
@@ -16,29 +33,34 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintBottom_toTopOf="@id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar_layout" />
 
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_dbg_send"
-        android:layout_width="272dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:hint="@string/send_info"
         app:counterEnabled="true"
         app:counterMaxLength="32"
-        app:layout_constraintStart_toStartOf="@+id/tv_terminal"
-        app:layout_constraintTop_toTopOf="@+id/guideline">
+        app:layout_constraintEnd_toStartOf="@id/btn_dbg_send"
+        app:layout_constraintStart_toStartOf="@id/tv_terminal"
+        app:layout_constraintTop_toTopOf="@id/guideline">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_dbg_send"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textShortMessage"
-            tools:text="@tools:sample/lorem" />
+            android:singleLine="true"
+            tools:text="@tools:sample/lorem"
+            android:imeOptions="actionSend"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -46,25 +68,28 @@
         android:id="@+id/btn_dbg_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:text="@string/send"
-        app:layout_constraintBottom_toBottomOf="@+id/til_dbg_send"
-        app:layout_constraintEnd_toEndOf="@+id/tv_terminal"
-        app:layout_constraintTop_toTopOf="@+id/til_dbg_send" />
+        app:layout_constraintBottom_toBottomOf="@id/til_dbg_send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/til_dbg_send" />
 
     <TextView
         android:id="@+id/tv_terminal"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:background="@color/terminalBackgroundColor"
         android:fontFamily="serif-monospace"
         android:scrollbars="vertical"
         android:textColor="@color/terminalTextColor"
-        app:layout_constraintBottom_toTopOf="@+id/btn_dbg_disconnect"
-        app:layout_constraintEnd_toEndOf="@+id/btn_dbg_return"
-        app:layout_constraintStart_toStartOf="@+id/btn_dbg_disconnect"
-        app:layout_constraintTop_toBottomOf="@+id/til_dbg_send"
+        app:layout_constraintBottom_toTopOf="@id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideline2"
         tools:text="17/04/19 15:03:00 | this is a message from RoboNova" />
 
     <!-- TODO: Disconnect Button should actually disconnect device and go back to "Main"Activity
@@ -90,15 +115,22 @@
         android:layout_marginEnd="16dp"
         android:onClick="returnToMoveList"
         android:text="@string/move_list"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_dbg_disconnect"
+        app:layout_constraintBottom_toBottomOf="@id/btn_dbg_disconnect"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_dbg_disconnect" />
+        app:layout_constraintStart_toEndOf="@id/btn_dbg_disconnect" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.3" />
+        app:layout_constraintGuide_percent="0.75" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

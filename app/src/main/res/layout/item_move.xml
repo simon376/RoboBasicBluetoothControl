@@ -4,8 +4,11 @@
     android:id="@+id/cv_item_move"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
     app:cardBackgroundColor="@android:color/transparent"
-    app:cardElevation="2dp"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="1dp"
     app:cardPreventCornerOverlap="true">
 
     <LinearLayout

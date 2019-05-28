@@ -65,6 +65,10 @@ public class MoveListActivity extends AppCompatActivity {
 
         mViewModel.getMoves().observe(this, moves -> {
             mMoveListAdapter.setMoves(moves);
+            int size = 0;
+            if(moves != null)
+                size = moves.size();
+            Log.d(TAG, "ViewModel observed change, size:" + size);
             // this connects the Adapter to the ViewModel
             // list of moves has changed, update the UI (recyclerView)
         });
@@ -80,6 +84,7 @@ public class MoveListActivity extends AppCompatActivity {
                 if(mBluetoothService != null){
                     String toast = "clicked move " + move.getName();
                     Toast.makeText(MoveListActivity.this, toast, Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, toast);
                     // writeBLE(String.valueOf(id));
                 }
             }
@@ -95,6 +100,8 @@ public class MoveListActivity extends AppCompatActivity {
             Intent intent1 = new Intent(MoveListActivity.this, CreateMoveSequenceActivity.class);
             startActivity(intent1);
         });
+        Log.d(TAG, "onCreate");
+
     }
 
 
@@ -143,6 +150,7 @@ public class MoveListActivity extends AppCompatActivity {
             mBluetoothService.connect(mDeviceAddress);
 
             // Tell the user about this for our demo.
+            //TODO: wird nie angezeigt
             Toast.makeText(MoveListActivity.this, (R.string.bluetooth_service_connected + mDeviceAddress),
                     Toast.LENGTH_SHORT).show();
 

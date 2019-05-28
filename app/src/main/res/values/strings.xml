@@ -39,4 +39,8 @@
     <string name="saved_mac_address_key">de.othr.robobasic.robobasicbluetoothcontrol.MAC_ADDRESS_KEY</string>
     <string name="cont_descr_move_icon">Move Icon</string>
     <string name="move_list">move list</string>
+    <string name="ok">ok</string>
+    <string name="location_access_req">location access required</string>
+    <string name="toolbar_title">Toolbar Title</string>
+    <string name="scanning">scanning..</string>
 </resources>

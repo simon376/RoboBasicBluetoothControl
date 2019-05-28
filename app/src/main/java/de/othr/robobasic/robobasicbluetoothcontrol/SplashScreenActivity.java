@@ -23,12 +23,10 @@ public class SplashScreenActivity extends AppCompatActivity {
         String macAddress = sharedPreferences.getString(getString(R.string.saved_mac_address_key), defaultAddress);
         if(macAddress.equals(defaultAddress)){
             // no mac address saved -> open "main"activity to scan for device
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, MainActivity.class));
         }
         else{
-          //TODO: merge  Intent intent = new Intent(this, MoveListActivity.class);
-          //  startActivity(intent);
+            startActivity(new Intent(this, MoveListActivity.class));
             //TODO: irgendwie auch das richtige GattCharacteristic speichern und hier automatisch "connecten"
         }
     }

@@ -4,7 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main_layout"
     tools:context=".MainActivity">
+
+    <include
+        layout="@layout/toolbar" />
+
 
     <TextView
         android:id="@+id/tv_main_info"
@@ -13,25 +18,27 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/main_info"
+        android:gravity="center"
+        android:text="@string/scanning"
+        android:textAlignment="center"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
         tools:visibility="visible" />
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_main_devices"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_main_start_scan"
+        app:layout_constraintBottom_toTopOf="@id/btn_main_start_scan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_main_info"
+        app:layout_constraintTop_toBottomOf="@id/tv_main_info"
         tools:listitem="@layout/item_device" />
 
     <com.google.android.material.button.MaterialButton
@@ -42,6 +49,7 @@
         android:text="@string/start_scan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="startScanning"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

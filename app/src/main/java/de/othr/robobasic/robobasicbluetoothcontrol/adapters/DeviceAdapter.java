@@ -102,7 +102,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         if(name != null)
             tvName.setText(name);
         else
-            tvName.setText(("Default Device Name " + position));
+            tvName.setText(("unknown device"));
         if(address != null)
             tvAddress.setText(address);
         if(deviceClass != 0)

@@ -1,10 +1,15 @@
 package de.othr.robobasic.robobasicbluetoothcontrol;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -14,13 +19,17 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,17 +49,24 @@ public class MainActivity extends AppCompatActivity {
 
     private final static String TAG = MainActivity.class.getSimpleName();
 
+    private View mLayout;
+    private ProgressBar mScanProgressBar;
+    private ObjectAnimator mProgressAnimator;
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothLeScanner mBluetoothScanner;
     private Handler mHandler;
     private DeviceAdapter mDeviceListAdapter;
     RecyclerView mRecyclerView;
 
+
     private TextView mInfoTextView;
 
     // Stops scanning after 10 seconds.
     private static final long   SCAN_PERIOD = 10000;
     private static final int    REQUEST_ENABLE_BT = 1;
+
+    private static final int PERMISSION_REQUEST_LOCATION = 0;
+
 
     private final ArrayList<BluetoothDevice> mDevices = new ArrayList<>();
 
@@ -59,6 +75,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle(getString(R.string.app_name));
+
+        mLayout = findViewById(R.id.main_layout);
+        mScanProgressBar = findViewById(R.id.progressBar);
+        mScanProgressBar.setIndeterminate(false);
+        mScanProgressBar.setProgress(0);
+        mProgressAnimator = ObjectAnimator.ofInt(mScanProgressBar,"progress", 0, 100);
+        mProgressAnimator.setDuration(SCAN_PERIOD);
+        mProgressAnimator.setInterpolator(new DecelerateInterpolator());
 
         // Initializes Bluetooth adapter.
         final BluetoothManager bluetoothManager =
@@ -88,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
             //tell MainActivity to stop scanning
             scanDevice(false);
+            mInfoTextView.setVisibility(View.INVISIBLE);
 
             //open DebugActivity to Connect to Device
             final Intent intent = new Intent(MainActivity.this, DebugActivity.class);
@@ -108,15 +136,108 @@ public class MainActivity extends AppCompatActivity {
 
         mInfoTextView = findViewById(R.id.tv_main_info);
 
-        Button startButton = findViewById(R.id.btn_main_start_scan);
-        startButton.setOnClickListener(v -> {
-            mInfoTextView.setVisibility(View.VISIBLE);
-            scanDevice(true);
-        });
 
+    }
+
+    public void startScanning(View view) {
+        // Check if the Camera permission has been granted
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            // Permission is already available, start scanning
+
+            mInfoTextView.setVisibility(View.VISIBLE);
+            mScanProgressBar.setVisibility(View.VISIBLE);
+
+            mProgressAnimator.start();
+
+//            // displays progressbar for 10 second scan period
+//            new Thread(() -> {
+//                while (mScanProgress < 100) {
+//                    mScanProgress += 1;
+//                    // Update the progress bar
+//                    mHandler.post(() -> mScanProgressBar.setProgress(mScanProgress));
+//                    try {
+//                        // Sleep for 100 milliseconds to show the progress slowly.
+//                        Thread.sleep(SCAN_PERIOD/100);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                if(mScanProgress == 100){
+//                    mScanProgressBar.setVisibility(View.INVISIBLE);
+//                    mScanProgressBar.setProgress(0);
+//                    mScanProgress = 0;
+//                    mInfoTextView.setVisibility(View.INVISIBLE);
+//
+//                }
+//            }).start();
+//
+
+            scanDevice(true);
+        } else {
+            // Permission is missing and must be requested.
+            requestLocationPermission();
+        }
 
 
     }
+
+    //TODO: move to SplashScreenActivity
+
+    /**
+     * Requests the {@link android.Manifest.permission#ACCESS_COARSE_LOCATION} permission.
+     * If an additional rationale should be displayed, the user has to launch the request from
+     * a SnackBar that includes additional information.
+     */
+    private void requestLocationPermission() {
+        // Permission has not been granted and must be requested.
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // Display a SnackBar with cda button to request the missing permission.
+            Snackbar.make(mLayout, getString(R.string.location_access_req),
+                    Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.ok), view -> {
+                        // Request the permission
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                                PERMISSION_REQUEST_LOCATION);
+                    }).show();
+
+        } else {
+            Snackbar.make(mLayout, "location unavailable", Snackbar.LENGTH_SHORT).show();
+            // Request the permission. The result will be received in onRequestPermissionResult().
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_LOCATION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        // BEGIN_INCLUDE(onRequestPermissionsResult)
+        if (requestCode == PERMISSION_REQUEST_LOCATION) {
+            // Request for camera permission.
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission has been granted. Start camera preview Activity.
+                Snackbar.make(mLayout, "location permission granted",
+                        Snackbar.LENGTH_SHORT)
+                        .show();
+
+
+            mInfoTextView.setVisibility(View.VISIBLE);
+            scanDevice(true);
+
+            } else {
+                // Permission request was denied.
+                Snackbar.make(mLayout, "location permission denied",
+                        Snackbar.LENGTH_SHORT)
+                        .show();
+            }
+        }
+        // END_INCLUDE(onRequestPermissionsResult)
+    }
+
 
     private void createSampleData() {
         String[] addresses = {"00:11:22:33:AA:BB","44:55:66:77:88:BB","00:22:44:66:AA:BB"};
@@ -183,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(() -> {
                 mBluetoothScanner.stopScan(mScanCallback);
+                mScanProgressBar.setVisibility(View.INVISIBLE);
               //  invalidateOptionsMenu();
             }, SCAN_PERIOD);
 
@@ -221,6 +343,7 @@ public class MainActivity extends AppCompatActivity {
             super.onScanFailed(errorCode);
         }
     };
+
 
 
 }

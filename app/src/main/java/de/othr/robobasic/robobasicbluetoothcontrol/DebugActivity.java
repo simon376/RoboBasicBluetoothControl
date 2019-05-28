@@ -1,6 +1,7 @@
 package de.othr.robobasic.robobasicbluetoothcontrol;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
@@ -11,19 +12,26 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * DebugActivity will be used to send custom text messages to the robot to test the bluetooth connection
@@ -39,15 +47,14 @@ public class DebugActivity extends AppCompatActivity {
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
     private TextView mConnectionState;
+    private ProgressBar mConnectionProgressBar;
     private TextView mTerminal;
     private String mDeviceName;
     private String mDeviceAddress;
-    private Button mButton;
-    private TextView mDataField;
+    private EditText mDataField;
+
 
     private boolean mConnected;
-
-    private SharedPreferences mSharedPreferences;
 
     private ExpandableListView mGattServicesList;
     private BluetoothService mBluetoothService;
@@ -92,8 +99,11 @@ public class DebugActivity extends AppCompatActivity {
             final String action = intent.getAction();
             if (BluetoothService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
+                mConnectionProgressBar.setVisibility(View.INVISIBLE);
                 updateConnectionState(R.string.connected);
             } else if (BluetoothService.ACTION_GATT_DISCONNECTED.equals(action)) {
+                //TODO: display error
+                mConnectionProgressBar.setVisibility(View.INVISIBLE);
                 updateConnectionState(R.string.disconnected);
             } else if (BluetoothService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
@@ -108,12 +118,13 @@ public class DebugActivity extends AppCompatActivity {
     // demonstrates 'Read' and 'Notify' features.  See
     // http://d.android.com/reference/android/bluetooth/BluetoothGatt.html for the complete
     // list of supported characteristic features.
-    private final ExpandableListView.OnChildClickListener servicesListClickListner =
+    private final ExpandableListView.OnChildClickListener servicesListClickListener =
             new ExpandableListView.OnChildClickListener() {
                 @Override
                 public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
                                             int childPosition, long id) {
                     if (mGattCharacteristics != null) {
+                      //  v.setBackgroundColor(getColor(R.color.primaryLightColor));
                         final BluetoothGattCharacteristic characteristic =
                                 mGattCharacteristics.get(groupPosition).get(childPosition);
                         final int charaProp = characteristic.getProperties();
@@ -147,36 +158,51 @@ public class DebugActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_debug);
 
+        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+
+
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
+        String toolbarTitle = mDeviceName + ": " + mDeviceAddress;
+        getSupportActionBar().setTitle(toolbarTitle);
+
+
         //Save selected device in SharedPreferences
-        mSharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        //TODO: add Characteristics
+        SharedPreferences mSharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(getString(R.string.saved_mac_address_key), mDeviceAddress);
         editor.apply();
 
         // Sets up UI references.
         mConnectionState = findViewById(R.id.connection_state);
+        mConnectionProgressBar = findViewById(R.id.progressBar);
+        mConnectionProgressBar.setIndeterminate(true);
+        mConnectionProgressBar.setVisibility(View.VISIBLE);
+
         ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
         mGattServicesList = findViewById(R.id.gatt_services_list);
-        mGattServicesList.setOnChildClickListener(servicesListClickListner);
+        mGattServicesList.setOnChildClickListener(servicesListClickListener);
+
+        StateListDrawable selector = new StateListDrawable();
+        selector.addState(new int[]{android.R.attr.state_pressed}, new ColorDrawable(getResources().getColor(R.color.primaryLightColor,null)));
+        selector.addState(new int[]{-android.R.attr.state_pressed}, new ColorDrawable(Color.WHITE));
+        mGattServicesList.setSelector(selector);
+
+
         mTerminal = findViewById(R.id.tv_terminal);
         mTerminal.setMovementMethod(new ScrollingMovementMethod());
 
-        Button disconnectButton = findViewById(R.id.btn_dbg_disconnect);
-        //TODO: send data button? -> main branch
-        Button returnButton = findViewById(R.id.btn_dbg_return);
+
         mDataField = findViewById(R.id.et_dbg_send);
-        mButton = findViewById(R.id.btn_dbg_send);
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: call method to send BLE Data
-                String data = mDataField.getText().toString();
-                writeBLE(data);
-            }
+        Button sendButton = findViewById(R.id.btn_dbg_send);
+        sendButton.setOnClickListener(v -> {
+            String data = mDataField.getText().toString();
+            writeBLE(data);
+            mDataField.getText().clear();
         });
 
 
@@ -210,8 +236,20 @@ public class DebugActivity extends AppCompatActivity {
         mBluetoothService = null;
     }
 
+//    private void setConnectionProgress(boolean success){
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                //TODO: set drawable instead of progressbar
+//                mConnectionProgressBar.setIndeterminateDrawable(getResources().getDrawable(R.drawable.icon_up,null));
+//            }
+//        });
+//
+//    }
+
     private void updateConnectionState(final int resourceId) {
-        runOnUiThread(() -> mConnectionState.setText(resourceId));
+        runOnUiThread(() -> Toast.makeText(DebugActivity.this, "disconnected", Toast.LENGTH_SHORT).show());
+        //mConnectionState.setText(resourceId));
     }
 
     private void displayData(String data) {
@@ -299,6 +337,7 @@ public class DebugActivity extends AppCompatActivity {
         // TODO: make sure connection stays active until explicitly disconnected.
         //  so we can still send data in different activity (movelistactivity)..
         Log.d(TAG, "should disconnect device in the future");
+        Toast.makeText(this, "not implemented yet", Toast.LENGTH_SHORT).show();
     }
     /**
      * TODO: method to create gatt service characteristic and write
