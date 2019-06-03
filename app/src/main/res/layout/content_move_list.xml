@@ -9,11 +9,15 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_moves_sequences"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:spanCount="2"
-        tools:listitem="@layout/item_move" />
+        tools:listitem="@layout/item_move"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,23 +10,8 @@
     <include
         layout="@layout/toolbar"/>
 
-    <!--<include-->
-        <!--layout="@layout/toolbar_debug"-->
-        <!--/>-->
-
-    <!--<ProgressBar-->
-        <!--android:id="@+id/pb_debug"-->
-        <!--style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:indeterminate="true"-->
-        <!--android:progressTint="@color/secondaryColor"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-    <include
-        android:id="@+id/include"
-        layout="@layout/gatt_services_characteristics"
+    <ExpandableListView
+        android:id="@+id/gatt_services_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -37,6 +22,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_layout" />
+
+    <!--<include-->
+        <!--android:id="@+id/include"-->
+        <!--layout="@layout/gatt_services_characteristics"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--app:layout_constraintBottom_toTopOf="@id/guideline2"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/toolbar_layout" />-->
 
 
     <com.google.android.material.textfield.TextInputLayout

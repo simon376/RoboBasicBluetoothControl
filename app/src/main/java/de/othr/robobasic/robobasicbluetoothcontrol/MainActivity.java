@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
 
             //tell MainActivity to stop scanning
             scanDevice(false);
-            mInfoTextView.setVisibility(View.INVISIBLE);
 
             //open DebugActivity to Connect to Device
             final Intent intent = new Intent(MainActivity.this, DebugActivity.class);
@@ -134,9 +133,6 @@ public class MainActivity extends AppCompatActivity {
 
         mHandler = new Handler();
 
-        mInfoTextView = findViewById(R.id.tv_main_info);
-
-
     }
 
     public void startScanning(View view) {
@@ -145,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
                 == PackageManager.PERMISSION_GRANTED) {
             // Permission is already available, start scanning
 
-            mInfoTextView.setVisibility(View.VISIBLE);
             mScanProgressBar.setVisibility(View.VISIBLE);
 
             mProgressAnimator.start();
@@ -225,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
                         .show();
 
 
-            mInfoTextView.setVisibility(View.VISIBLE);
             scanDevice(true);
 
             } else {

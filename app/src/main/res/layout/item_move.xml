@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
-    app:cardBackgroundColor="@android:color/transparent"
+    app:cardBackgroundColor="?attr/colorBackgroundFloating"
     app:cardCornerRadius="4dp"
     app:cardElevation="1dp"
     app:cardPreventCornerOverlap="true">
@@ -28,7 +28,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="16dp"
             android:text="@string/default_move_name"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 

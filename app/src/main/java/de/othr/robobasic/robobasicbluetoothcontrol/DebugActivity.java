@@ -46,7 +46,6 @@ public class DebugActivity extends AppCompatActivity {
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
-    private TextView mConnectionState;
     private ProgressBar mConnectionProgressBar;
     private TextView mTerminal;
     private String mDeviceName;
@@ -178,12 +177,10 @@ public class DebugActivity extends AppCompatActivity {
         editor.apply();
 
         // Sets up UI references.
-        mConnectionState = findViewById(R.id.connection_state);
         mConnectionProgressBar = findViewById(R.id.progressBar);
         mConnectionProgressBar.setIndeterminate(true);
         mConnectionProgressBar.setVisibility(View.VISIBLE);
 
-        ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
         mGattServicesList = findViewById(R.id.gatt_services_list);
         mGattServicesList.setOnChildClickListener(servicesListClickListener);
 
@@ -275,7 +272,9 @@ public class DebugActivity extends AppCompatActivity {
             HashMap<String, String> currentServiceData = new HashMap<>();
             uuid = gattService.getUuid().toString();
             currentServiceData.put(
-                    LIST_NAME, RoboNovaGattAttributes.lookup(uuid, unknownServiceString));
+                    LIST_NAME, RoboNovaGattAttributes.lookupService(uuid, unknownServiceString));
+//            currentServiceData.put(
+//                    LIST_NAME, RoboNovaGattAttributes.lookup(uuid, unknownServiceString));
             currentServiceData.put(LIST_UUID, uuid);
             gattServiceData.add(currentServiceData);
 
@@ -292,7 +291,9 @@ public class DebugActivity extends AppCompatActivity {
                 HashMap<String, String> currentCharaData = new HashMap<>();
                 uuid = gattCharacteristic.getUuid().toString();
                 currentCharaData.put(
-                        LIST_NAME, RoboNovaGattAttributes.lookup(uuid, unknownCharaString));
+                        LIST_NAME, RoboNovaGattAttributes.lookupCharacteristics(uuid, unknownCharaString));
+//                currentCharaData.put(
+//                        LIST_NAME, RoboNovaGattAttributes.lookup(uuid, unknownCharaString));
                 currentCharaData.put(LIST_UUID, uuid);
                 gattCharacteristicGroupData.add(currentCharaData);
             }

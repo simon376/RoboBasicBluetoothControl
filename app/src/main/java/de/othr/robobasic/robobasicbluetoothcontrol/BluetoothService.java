@@ -50,9 +50,9 @@ public class BluetoothService extends Service {
             "de.othr.robobasic.EXTRA_DATA";
 
     //TODO: RoboNova Standardwerte für Characteristics / Services eintragen
-    public final static UUID UUID_ROBONOVA =
-            UUID.fromString(RoboNovaGattAttributes.ROBONOVA_CHARACTERISTIC);
-
+//    public final static UUID UUID_ROBONOVA =
+//            UUID.fromString(RoboNovaGattAttributes.ROBONOVA_CHARACTERISTIC);
+//
 
     private final IBinder mBinder = new LocalBinder();
 
