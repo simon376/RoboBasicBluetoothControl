@@ -11,15 +11,15 @@
     android:orientation="vertical">
 
 
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/colorPrimary"
-                    android:minHeight="?attr/actionBarSize"
-                    app:popupTheme="@style/AppTheme.PopupOverlay"
-                    app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                    app:titleTextColor="@color/secondaryTextColor" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleTextColor="@color/secondaryTextColor" />
 
 
         <ProgressBar
@@ -29,7 +29,6 @@
             android:layout_height="4dp"
             android:indeterminate="true"
             tools:visibility="visible"
-            android:scaleY="4"
             android:visibility="invisible" />
 
 </LinearLayout>

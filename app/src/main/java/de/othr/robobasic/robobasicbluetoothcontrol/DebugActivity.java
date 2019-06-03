@@ -99,11 +99,13 @@ public class DebugActivity extends AppCompatActivity {
             if (BluetoothService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
                 mConnectionProgressBar.setVisibility(View.INVISIBLE);
-                updateConnectionState(R.string.connected);
+                runOnUiThread(() -> Toast.makeText(DebugActivity.this, getResources().getString(R.string.connected), Toast.LENGTH_SHORT).show());
+
             } else if (BluetoothService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 //TODO: display error
                 mConnectionProgressBar.setVisibility(View.INVISIBLE);
-                updateConnectionState(R.string.disconnected);
+                runOnUiThread(() -> Toast.makeText(DebugActivity.this, getResources().getString(R.string.disconnected), Toast.LENGTH_SHORT).show());
+
             } else if (BluetoothService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
                 displayGattServices(mBluetoothService.getSupportedGattServices());
@@ -123,7 +125,10 @@ public class DebugActivity extends AppCompatActivity {
                 public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
                                             int childPosition, long id) {
                     if (mGattCharacteristics != null) {
-                      //  v.setBackgroundColor(getColor(R.color.primaryLightColor));
+
+                        int index = parent.getFlatListPosition(ExpandableListView.getPackedPositionForChild(groupPosition, childPosition));
+                        parent.setItemChecked(index, true);
+
                         final BluetoothGattCharacteristic characteristic =
                                 mGattCharacteristics.get(groupPosition).get(childPosition);
                         final int charaProp = characteristic.getProperties();
@@ -162,8 +167,13 @@ public class DebugActivity extends AppCompatActivity {
 
 
         final Intent intent = getIntent();
+
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+        if(mDeviceName == null)
+            mDeviceName = "device";
+        if(mDeviceAddress == null)
+            mDeviceAddress = "unknown address";
 
         String toolbarTitle = mDeviceName + ": " + mDeviceAddress;
         getSupportActionBar().setTitle(toolbarTitle);
@@ -180,14 +190,15 @@ public class DebugActivity extends AppCompatActivity {
         mConnectionProgressBar = findViewById(R.id.progressBar);
         mConnectionProgressBar.setIndeterminate(true);
         mConnectionProgressBar.setVisibility(View.VISIBLE);
+        mConnectionProgressBar.setScaleY(4);
 
         mGattServicesList = findViewById(R.id.gatt_services_list);
         mGattServicesList.setOnChildClickListener(servicesListClickListener);
 
-        StateListDrawable selector = new StateListDrawable();
-        selector.addState(new int[]{android.R.attr.state_pressed}, new ColorDrawable(getResources().getColor(R.color.primaryLightColor,null)));
-        selector.addState(new int[]{-android.R.attr.state_pressed}, new ColorDrawable(Color.WHITE));
-        mGattServicesList.setSelector(selector);
+//        StateListDrawable selector = new StateListDrawable();
+//        selector.addState(new int[]{android.R.attr.state_pressed}, new ColorDrawable(getResources().getColor(R.color.primaryLightColor,null)));
+//        selector.addState(new int[]{-android.R.attr.state_pressed}, new ColorDrawable(Color.WHITE));
+//        mGattServicesList.setSelector(selector);
 
 
         mTerminal = findViewById(R.id.tv_terminal);
@@ -244,10 +255,6 @@ public class DebugActivity extends AppCompatActivity {
 //
 //    }
 
-    private void updateConnectionState(final int resourceId) {
-        runOnUiThread(() -> Toast.makeText(DebugActivity.this, "disconnected", Toast.LENGTH_SHORT).show());
-        //mConnectionState.setText(resourceId));
-    }
 
     private void displayData(String data) {
         if (data != null) {

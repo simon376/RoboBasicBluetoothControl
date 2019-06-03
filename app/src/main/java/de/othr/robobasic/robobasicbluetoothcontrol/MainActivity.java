@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
          // setup devicelist
 
         //for debugging only
+        //TODO: remove once device was detected
         createSampleData();
 
         mDeviceListAdapter = new DeviceAdapter(mDevices);
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startScanning(View view) {
-        // Check if the Camera permission has been granted
+        // Check if the Location permission has been granted
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             // Permission is already available, start scanning
@@ -169,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
 //
 
             scanDevice(true);
+          //  mDeviceListAdapter.clear(); // remove sample devices
         } else {
             // Permission is missing and must be requested.
             requestLocationPermission();
