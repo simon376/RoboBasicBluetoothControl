@@ -8,32 +8,48 @@
     tools:context=".MainActivity">
 
     <include
+        android:id="@+id/include"
         layout="@layout/toolbar" />
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_main_devices"
-        android:layout_width="0dp"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/main_coordinator"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="8dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@id/btn_main_start_scan"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
-        tools:listitem="@layout/item_device" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_main_start_scan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:text="@string/start_scan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:onClick="startScanning"/>
+        app:layout_constraintTop_toBottomOf="@+id/include">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_main_devices"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_device" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/btn_main_start_scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:onClick="startScanning"
+            android:text="@string/start_scan"
+            app:icon="@drawable/ic_bluetooth_searching_black_24dp"
+            app:layout_anchor="@id/rv_main_devices"
+            app:layout_anchorGravity="bottom|center" />
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <!--<com.google.android.material.button.MaterialButton-->
+        <!--android:id="@+id/btn_main_start_scan"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="24dp"-->
+        <!--android:text="@string/start_scan"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--android:onClick="startScanning"/>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
