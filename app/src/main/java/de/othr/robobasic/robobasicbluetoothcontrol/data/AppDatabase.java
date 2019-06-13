@@ -15,7 +15,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Move.class, MoveSequence.class}, version = 3)
+@Database(entities = {Move.class, MoveSequence.class}, version = 4)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     // Data Access Objects

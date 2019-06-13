@@ -43,4 +43,6 @@
     <string name="location_access_req">location access required</string>
     <string name="toolbar_title">Toolbar Title</string>
     <string name="scanning">scanning..</string>
+    <string name="share">Share</string>
+    <string name="send_to">send terminal content to</string>
 </resources>

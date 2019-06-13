@@ -19,11 +19,14 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
+import android.widget.ShareActionProvider;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,6 +57,8 @@ public class DebugActivity extends AppCompatActivity {
 
 
     private boolean mConnected;
+
+    private ShareActionProvider shareActionProvider;
 
     private ExpandableListView mGattServicesList;
     private BluetoothService mBluetoothService;
@@ -220,6 +225,51 @@ public class DebugActivity extends AppCompatActivity {
         //Bind activity to service (or other way around.. whatever)
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate menu resource file.
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+
+        // Locate MenuItem with ShareActionProvider
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+
+        // Fetch and store ShareActionProvider
+        shareActionProvider = (ShareActionProvider) item.getActionProvider();
+
+        // Return true to display menu
+        return true;
+    }
+/*
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_item_share) {
+
+            String text = mTerminal.getText().toString();
+            if (text.isEmpty())
+                return super.onOptionsItemSelected(item);
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, text);
+            sendIntent.setType("text/plain");
+            setShareIntent(sendIntent);
+            return true;
+        }
+        // Invoke the superclass to handle it.
+        return super.onOptionsItemSelected(item);
+    }*/
+
+    // Call to update the share intent
+    private void setShareIntent(String text) {
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, text);
+        sendIntent.setType("text/plain");
+
+        if (shareActionProvider != null) {
+            shareActionProvider.setShareIntent(sendIntent);
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -259,6 +309,8 @@ public class DebugActivity extends AppCompatActivity {
     private void displayData(String data) {
         if (data != null) {
             mTerminal.append(("\n" + data));
+            setShareIntent(data);
+
         }
     }
     // Demonstrates how to iterate through the supported GATT Services/Characteristics.
