@@ -53,6 +53,25 @@ public class MoveListActivity extends AppCompatActivity {
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
+        mRecyclerView = findViewById(R.id.rv_moves_sequences);
+        mMoveListAdapter = new MoveListAdapter();
+        mMoveListAdapter.setClickHandler(move -> {
+            int id = move.getId();
+            Log.d(TAG, "clicked on ListItem @ id "+ id);
+            //TODO onItemClickBehaviour (send message)
+            if(mBound){
+                if(mBluetoothService != null){
+                    String toast = "clicked move " + move.getName();
+                    Toast.makeText(MoveListActivity.this, toast, Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, toast);
+                    // writeBLE(String.valueOf(id));
+                }
+            }
+
+        });
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setAdapter(mMoveListAdapter);
 
 
         mViewModel = ViewModelProviders.of(this).get(MyViewModel.class);
@@ -74,25 +93,6 @@ public class MoveListActivity extends AppCompatActivity {
         });
 
 
-        mRecyclerView = findViewById(R.id.rv_moves_sequences);
-        mMoveListAdapter = new MoveListAdapter();
-        mMoveListAdapter.setClickHandler(move -> {
-            int id = move.getId();
-            Log.d(TAG, "clicked on ListItem @ id "+ id);
-            //TODO onItemClickBehaviour (send message)
-            if(mBound){
-                if(mBluetoothService != null){
-                    String toast = "clicked move " + move.getName();
-                    Toast.makeText(MoveListActivity.this, toast, Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, toast);
-                    // writeBLE(String.valueOf(id));
-                }
-            }
-
-        });
-
-        mRecyclerView.setAdapter(mMoveListAdapter);
-        mRecyclerView.setHasFixedSize(true);
 
         //TODO: hide on scroll
         FloatingActionButton fab = findViewById(R.id.fab);

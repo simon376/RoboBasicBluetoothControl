@@ -1,7 +1,9 @@
 package de.othr.robobasic.robobasicbluetoothcontrol;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ShareActionProvider;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
@@ -26,7 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
-import android.widget.ShareActionProvider;
+
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -234,7 +236,7 @@ public class DebugActivity extends AppCompatActivity {
         MenuItem item = menu.findItem(R.id.menu_item_share);
 
         // Fetch and store ShareActionProvider
-        shareActionProvider = (ShareActionProvider) item.getActionProvider();
+        shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
 
         // Return true to display menu
         return true;
@@ -309,8 +311,7 @@ public class DebugActivity extends AppCompatActivity {
     private void displayData(String data) {
         if (data != null) {
             mTerminal.append(("\n" + data));
-            setShareIntent(data);
-
+            setShareIntent(mTerminal.getText().toString());
         }
     }
     // Demonstrates how to iterate through the supported GATT Services/Characteristics.
