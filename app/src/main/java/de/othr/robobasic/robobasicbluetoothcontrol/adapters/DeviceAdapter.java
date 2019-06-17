@@ -102,7 +102,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         if(name != null)
             tvName.setText(name);
         else
-            tvName.setText(("Default Device Name " + position));
+            tvName.setText(("unknown device"));
         if(address != null)
             tvAddress.setText(address);
         if(deviceClass != 0)
@@ -161,9 +161,10 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             return 0;
     }
 
-    public void addDevice(BluetoothDevice device){
+    public void addDevice(int position, BluetoothDevice device){
         if(!mDevices.contains(device)){
-            mDevices.add(device);
+            mDevices.add(position, device);
+            notifyItemInserted(position);
         }
     }
 

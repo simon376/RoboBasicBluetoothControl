@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import de.othr.robobasic.robobasicbluetoothcontrol.R;
+
 import static java.lang.Math.min;
 
 /**
@@ -25,6 +27,17 @@ class DataGenerator {
         for(int i = 0; i < max; i++){
             moves.add(new Move(NAME[i], MESSAGE[i]));
         }
+        moves.get(0).setDrawable(R.drawable.icon_left);
+        moves.get(1).setDrawable(R.drawable.icon_up);
+        moves.get(2).setDrawable(R.drawable.icon_down);
+        moves.get(3).setDrawable(R.drawable.icon_right);
+        moves.get(4).setDrawable(R.drawable.icon_walk);
+        moves.get(5).setDrawable(R.drawable.icon_return);
+        moves.get(6).setDrawable(R.drawable.icon_turn);
+        moves.get(6).setDrawable(R.drawable.icon_sit_down);
+        moves.get(7).setDrawable(R.drawable.icon_get_up);
+        moves.get(8).setDrawable(R.drawable.icon_default);
+
         return moves;
     }
 

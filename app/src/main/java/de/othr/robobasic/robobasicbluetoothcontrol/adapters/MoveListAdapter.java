@@ -85,7 +85,7 @@ public class MoveListAdapter extends RecyclerView.Adapter<MoveListAdapter.ViewHo
         Move item = mItems.get(position);
         if(item != null){
             holder.mNameTextView.setText( item.getName());
-
+            holder.mIconView.setImageResource(item.getDrawable());
         }
         else{
             // Covers the case of data not being ready yet.

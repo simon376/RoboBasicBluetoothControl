@@ -15,7 +15,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Move.class, MoveSequence.class}, version = 2)
+@Database(entities = {Move.class, MoveSequence.class}, version = 4)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     // Data Access Objects
@@ -44,7 +44,7 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     /**
-     * Build the database. {@link Builder#build()} only sets up the database configuration and
+     * Build the database. {@link Builder#build()} only sets icon_up the database configuration and
      * creates a new instance of the database.
      * The SQLite database is only created when it's accessed for the first time.
      */

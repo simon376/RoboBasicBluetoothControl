@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,7 +15,10 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -49,6 +53,25 @@ public class MoveListActivity extends AppCompatActivity {
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
+        mRecyclerView = findViewById(R.id.rv_moves_sequences);
+        mMoveListAdapter = new MoveListAdapter();
+        mMoveListAdapter.setClickHandler(move -> {
+            int id = move.getId();
+            Log.d(TAG, "clicked on ListItem @ id "+ id);
+            //TODO onItemClickBehaviour (send message)
+            if(mBound){
+                if(mBluetoothService != null){
+                    String toast = "clicked move " + move.getName();
+                    Toast.makeText(MoveListActivity.this, toast, Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, toast);
+                    // writeBLE(String.valueOf(id));
+                }
+            }
+
+        });
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setAdapter(mMoveListAdapter);
 
 
         mViewModel = ViewModelProviders.of(this).get(MyViewModel.class);
@@ -61,34 +84,23 @@ public class MoveListActivity extends AppCompatActivity {
 
         mViewModel.getMoves().observe(this, moves -> {
             mMoveListAdapter.setMoves(moves);
+            int size = 0;
+            if(moves != null)
+                size = moves.size();
+            Log.d(TAG, "ViewModel observed change, size:" + size);
             // this connects the Adapter to the ViewModel
             // list of moves has changed, update the UI (recyclerView)
         });
 
 
-        mRecyclerView = findViewById(R.id.rv_moves_sequences);
-        mMoveListAdapter = new MoveListAdapter();
-        mMoveListAdapter.setClickHandler(move -> {
-            int id = move.getId();
-            Log.d(TAG, "clicked on ListItem @ id "+ id);
-            //TODO onItemClickBehaviour (send message)
-            if(mBound){
-                if(mBluetoothService != null){
-                    String toast = "clicked move " + move.getName();
-                    Toast.makeText(MoveListActivity.this, toast, Toast.LENGTH_SHORT).show();
-                    // writeBLE(String.valueOf(id));
-                }
-            }
 
+        //TODO: hide on scroll
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(v -> {
+            Intent intent1 = new Intent(MoveListActivity.this, CreateMoveSequenceActivity.class);
+            startActivity(intent1);
         });
-
-        mRecyclerView.setAdapter(mMoveListAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setHasFixedSize(true);
-        RecyclerView.ItemDecoration itemDecoration = new
-                DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(itemDecoration);
-
+        Log.d(TAG, "onCreate");
 
     }
 
@@ -138,6 +150,7 @@ public class MoveListActivity extends AppCompatActivity {
             mBluetoothService.connect(mDeviceAddress);
 
             // Tell the user about this for our demo.
+            //TODO: wird nie angezeigt
             Toast.makeText(MoveListActivity.this, (R.string.bluetooth_service_connected + mDeviceAddress),
                     Toast.LENGTH_SHORT).show();
 
