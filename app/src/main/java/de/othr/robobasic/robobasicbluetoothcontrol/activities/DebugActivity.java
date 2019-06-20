@@ -1,4 +1,4 @@
-package de.othr.robobasic.robobasicbluetoothcontrol;
+package de.othr.robobasic.robobasicbluetoothcontrol.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.ShareActionProvider;
@@ -14,9 +14,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.method.ScrollingMovementMethod;
@@ -36,7 +33,10 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+
+import de.othr.robobasic.robobasicbluetoothcontrol.R;
+import de.othr.robobasic.robobasicbluetoothcontrol.misc.BluetoothService;
+import de.othr.robobasic.robobasicbluetoothcontrol.misc.RoboNovaGattAttributes;
 
 /**
  * DebugActivity will be used to send custom text messages to the robot to test the bluetooth connection
@@ -145,18 +145,18 @@ public class DebugActivity extends AppCompatActivity {
                                 mNotifyCharacteristic = null;
                             }
                             mBluetoothService.readCharacteristic(characteristic);
-                            Log.d("selected Read Characteristic, requesting read.")
+                            Log.d(TAG,"selected Read Characteristic, requesting read.");
                         }
                         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
                             mNotifyCharacteristic = characteristic;
                             mBluetoothService.setCharacteristicNotification(
                                     characteristic, true);
-                            Log.d("selected Notify Characteristic, enabling notifications.");
+                            Log.d(TAG,"selected Notify Characteristic, enabling notifications.");
                             //TODO: actually show notifications
                         }
                         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_WRITE) > 0) {
                             mWriteCharacteristic = characteristic;
-                            Log.d("selected Write Characteristic.");
+                            Log.d(TAG,"selected Write Characteristic.");
                         }
                         return true;
                     }
@@ -298,7 +298,9 @@ public class DebugActivity extends AppCompatActivity {
             HashMap<String, String> currentServiceData = new HashMap<>();
             uuid = gattService.getUuid().toString();
             currentServiceData.put(
-                    LIST_NAME, RoboNovaGattAttributes.lookup(uuid, unknownServiceString));
+                    LIST_NAME, RoboNovaGattAttributes.lookupService(uuid, unknownServiceString));
+//            currentServiceData.put(
+//                    LIST_NAME, RoboNovaGattAttributes.lookup(uuid, unknownServiceString));
             currentServiceData.put(LIST_UUID, uuid);
             gattServiceData.add(currentServiceData);
 
@@ -315,7 +317,9 @@ public class DebugActivity extends AppCompatActivity {
                 HashMap<String, String> currentCharaData = new HashMap<>();
                 uuid = gattCharacteristic.getUuid().toString();
                 currentCharaData.put(
-                        LIST_NAME, RoboNovaGattAttributes.lookup(uuid, unknownCharaString));
+                        LIST_NAME, RoboNovaGattAttributes.lookupCharacteristics(uuid, unknownCharaString));
+//                currentCharaData.put(
+//                        LIST_NAME, RoboNovaGattAttributes.lookup(uuid, unknownCharaString));
                 currentCharaData.put(LIST_UUID, uuid);
                 gattCharacteristicGroupData.add(currentCharaData);
             }

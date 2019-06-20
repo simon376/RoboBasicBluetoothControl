@@ -1,4 +1,4 @@
-package de.othr.robobasic.robobasicbluetoothcontrol;
+package de.othr.robobasic.robobasicbluetoothcontrol.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +25,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -34,7 +33,10 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.othr.robobasic.robobasicbluetoothcontrol.R;
 import de.othr.robobasic.robobasicbluetoothcontrol.adapters.DeviceAdapter;
+
+import static java.lang.Math.min;
 
 /**
  * MainActivity starts search for Bluetooth devices and shows them in a RecyclerView,
@@ -214,9 +216,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void createSampleData(int num) {
-        int n = min(num,addresses.length);
         String[] addresses = {"00:11:22:33:AA:BB","44:55:66:77:88:BB","00:22:44:66:AA:BB"};
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < num; i++) {
             String address = addresses[i%3];
             if(BluetoothAdapter.checkBluetoothAddress(address)){
                 BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);

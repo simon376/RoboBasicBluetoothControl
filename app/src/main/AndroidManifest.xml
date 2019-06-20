@@ -17,19 +17,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".SplashScreenActivity" />
-        <activity android:name=".MoveListActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.SplashScreenActivity" />
+        <activity android:name=".activities.MoveListActivity" />
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateMoveSequenceActivity" />
-        <activity android:name=".DebugActivity"
+        <activity android:name=".activities.CreateMoveSequenceActivity" />
+        <activity android:name=".activities.DebugActivity"
                   android:windowSoftInputMode="stateHidden" />
-        <service android:name=".BluetoothService" android:enabled="true"/>
+        <service android:name=".misc.BluetoothService" android:enabled="true"/>
     </application>
 
 </manifest>

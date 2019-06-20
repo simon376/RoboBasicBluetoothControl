@@ -1,8 +1,10 @@
-package de.othr.robobasic.robobasicbluetoothcontrol;
+package de.othr.robobasic.robobasicbluetoothcontrol.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import de.othr.robobasic.robobasicbluetoothcontrol.R;
 
 /**
  * CreateMoveSequenceActivity will be used to create custom combinations of movements for the robot to act out

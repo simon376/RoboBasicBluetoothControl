@@ -1,4 +1,4 @@
-package de.othr.robobasic.robobasicbluetoothcontrol.viewmodels;
+package de.othr.robobasic.robobasicbluetoothcontrol.viewmodel;
 
 import android.app.Application;
 
@@ -9,36 +9,27 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import de.othr.robobasic.robobasicbluetoothcontrol.data.DataRepository;
 import de.othr.robobasic.robobasicbluetoothcontrol.data.Move;
-import de.othr.robobasic.robobasicbluetoothcontrol.data.MoveSequence;
 
-public class MyViewModel extends AndroidViewModel {
+public class MoveViewModel extends AndroidViewModel {
 
     // MediatorLiveData can observe other LiveData objects and react on their emissions.
     private final MediatorLiveData<List<Move>> mObservableMoves;
 
-    // MediatorLiveData can observe other LiveData objects and react on their emissions.
- //   private final MediatorLiveData<List<MoveSequence>> mObservableMoveSequences;
-
     private final DataRepository mRepository;
 
-
-    public MyViewModel(Application application) {
+    public MoveViewModel(Application application) {
         super(application);
 
         mObservableMoves = new MediatorLiveData<>();
-    //    mObservableMoveSequences = new MediatorLiveData<>();
         // set by default null, until we get data from the database.
         mObservableMoves.setValue(null);
-     //   mObservableMoveSequences.setValue(null);
 
         mRepository = DataRepository.getInstance(application);
 
         LiveData<List<Move>> moves = mRepository.getMoves();
-        LiveData<List<MoveSequence>> moveSequences = mRepository.getMoveSequences();
 
         // observe the changes of the moves from the database and forward them
         mObservableMoves.addSource(moves, mObservableMoves::setValue);
-    //    mObservableMoveSequences.addSource(moveSequences, mObservableMoveSequences::setValue);
     }
 
     /**
@@ -52,12 +43,4 @@ public class MyViewModel extends AndroidViewModel {
 
     public LiveData<Move> getMove(int moveID) { return mRepository.loadMove(moveID);}
 
- /*   @Deprecated
-    public LiveData<List<MoveSequence>> getMoveSequences() {
-        return mObservableMoveSequences;
-    }
-
-    @Deprecated
-    public void insert(MoveSequence moveSequence) { mRepository.insert(moveSequence); }
-*/
 }

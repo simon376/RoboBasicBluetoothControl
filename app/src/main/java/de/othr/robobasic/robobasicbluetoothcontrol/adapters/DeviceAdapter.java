@@ -155,7 +155,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        if(mDevices!= null)
+        if(mDevices != null)
             return mDevices.size();
         else
             return 0;
@@ -174,6 +174,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
     public void clear(){
         mDevices.clear();
+        notifyDataSetChanged();
     }
 
 }

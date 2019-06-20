@@ -11,7 +11,7 @@ import de.othr.robobasic.robobasicbluetoothcontrol.R;
  * fields aren't final yet.
  */
 @Entity
-public class Move extends ListItem {
+public class Move {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -29,7 +29,6 @@ public class Move extends ListItem {
         this.name = name; this.message = message; this.drawable = R.drawable.icon_default;
     }
 
-    @Override
     public String getName() {
         return name;
     }

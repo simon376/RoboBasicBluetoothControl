@@ -1,4 +1,4 @@
-package de.othr.robobasic.robobasicbluetoothcontrol;
+package de.othr.robobasic.robobasicbluetoothcontrol.misc;
 
 import android.content.res.AssetManager;
 import android.util.Log;
@@ -14,8 +14,8 @@ import java.util.HashMap;
 /**
  * This class includes a small subset of standard GATT attributes for demonstration purposes.
  */
-abstract class RoboNovaGattAttributes {
-    private static final HashMap<String, String> attributes = new HashMap<>();
+public abstract class RoboNovaGattAttributes {
+    //TODO: define own characteristic / service
     static final String ROBONOVA_CHARACTERISTIC = "00002a37-0000-1000-8000-00805f9b34fb";
     static final String ROBONOVA_SERVICE = "0000180d-0000-1000-8000-00805f9b34fb";
 
@@ -23,19 +23,6 @@ abstract class RoboNovaGattAttributes {
     private static final HashMap<String,String> characteristics = new HashMap<>();
 
     static {
-        //TODO: Hier die Attribute des RoboNovas speichern (werte ändern)
-        attributes.put(ROBONOVA_SERVICE, "RoboNova XY Service");
-
-        attributes.put(ROBONOVA_CHARACTERISTIC, "RoboNova Characteristic");
-
-        attributes.put("00002a29-0000-1000-8000-00805f9b34fb", "Manufacturer Name String");
-
-        //Read Names for Services & Characteristics from resource file
-
-        // Funktioniert nicht ohne Context..
-//        readFile("raw/characteristics.txt", characteristics);
-//        readFile("raw/services.txt", services);
-
         addData();
     }
 
@@ -309,49 +296,14 @@ abstract class RoboNovaGattAttributes {
 
     }
 
-    static void readFile(String filename, HashMap<String,String> map) {
-        File textFile = new File(filename);
-//        if(!textFile.exists())
-//            return;
 
-        String line;
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(textFile));
-            while ((line = reader.readLine()) != null)
-            {
-                String[] parts = line.split(";", 2);
-                if (parts.length >= 2)
-                {
-                    String key = parts[0];
-                    String value = parts[1];
-                    map.put(key, value);
-                } else {
-                    Log.d("GATTAttributes", "ignoring line: " + line);
-                }
-            }
-            reader.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("GATTAttributes", "error while reading attribute text files");
-        }
-
-
-    }
-
-    static String lookup(String uuid, String defaultName) {
-        String name = attributes.get(uuid);
-        return name == null ? defaultName : name;
-    }
-
-    static String lookupCharacteristics(String uuid, String defaultName){
+    public static String lookupCharacteristics(String uuid, String defaultName){
         String uuidCharNumber = uuid.substring(0, 8).toUpperCase();
         String name = characteristics.get(uuidCharNumber);
         return name == null ? defaultName : name;
     }
 
-    static String lookupService(String uuid, String defaultName){
+    public static String lookupService(String uuid, String defaultName){
         String uuidServiceNumber = uuid.substring(0, 8).toUpperCase();
         String name = services.get(uuidServiceNumber);
         return name == null ? defaultName : name;

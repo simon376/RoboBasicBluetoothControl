@@ -1,11 +1,8 @@
-package de.othr.robobasic.robobasicbluetoothcontrol;
+package de.othr.robobasic.robobasicbluetoothcontrol.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ComponentName;
@@ -15,25 +12,23 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.List;
-
+import de.othr.robobasic.robobasicbluetoothcontrol.R;
 import de.othr.robobasic.robobasicbluetoothcontrol.adapters.MoveListAdapter;
-import de.othr.robobasic.robobasicbluetoothcontrol.data.Move;
-import de.othr.robobasic.robobasicbluetoothcontrol.viewmodels.MyViewModel;
+import de.othr.robobasic.robobasicbluetoothcontrol.misc.BluetoothService;
+import de.othr.robobasic.robobasicbluetoothcontrol.viewmodel.MoveViewModel;
 
-import static de.othr.robobasic.robobasicbluetoothcontrol.DebugActivity.EXTRAS_DEVICE_ADDRESS;
-import static de.othr.robobasic.robobasicbluetoothcontrol.DebugActivity.EXTRAS_DEVICE_NAME;
+import static de.othr.robobasic.robobasicbluetoothcontrol.activities.DebugActivity.EXTRAS_DEVICE_ADDRESS;
+import static de.othr.robobasic.robobasicbluetoothcontrol.activities.DebugActivity.EXTRAS_DEVICE_NAME;
 
 public class MoveListActivity extends AppCompatActivity {
 
     private final static String TAG = MoveListActivity.class.getSimpleName();
 
-    private MyViewModel mViewModel;
+    private MoveViewModel mViewModel;
     private RecyclerView mRecyclerView;
     private MoveListAdapter mMoveListAdapter;
 
@@ -74,7 +69,7 @@ public class MoveListActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mMoveListAdapter);
 
 
-        mViewModel = ViewModelProviders.of(this).get(MyViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(MoveViewModel.class);
 
         // now i can use the ViewModel to access the data which is saved in the database (unknownst of the viewmodel)
         // use an Observer to observe Changes on the LiveData List of Moves and add them to the RecyclerView

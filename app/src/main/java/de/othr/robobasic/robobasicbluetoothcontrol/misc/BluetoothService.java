@@ -1,4 +1,4 @@
-package de.othr.robobasic.robobasicbluetoothcontrol;
+package de.othr.robobasic.robobasicbluetoothcontrol.misc;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -16,7 +16,6 @@ import android.os.IBinder;
 import android.util.Log;
 
 import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -60,9 +59,9 @@ public class BluetoothService extends Service {
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
-    class LocalBinder extends Binder {
+    public class LocalBinder extends Binder {
         // Return this instance of BluetoothService so clients can call public methods
-        BluetoothService getService() {
+        public BluetoothService getService() {
             return BluetoothService.this;
         }
     }

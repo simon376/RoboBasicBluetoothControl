@@ -15,12 +15,10 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Move.class, MoveSequence.class}, version = 4)
-@TypeConverters({Converters.class})
+@Database(entities = {Move.class}, version = 4)
 public abstract class AppDatabase extends RoomDatabase {
     // Data Access Objects
     public abstract MoveDao moveDao();
-    public abstract MoveSequenceDao moveSequenceDao();
 
     @VisibleForTesting
     private static final String DATABASE_NAME = "basic-db";
@@ -76,11 +74,9 @@ public abstract class AppDatabase extends RoomDatabase {
         mIsDatabaseCreated.postValue(true);
     }
 
-    private static void insertData(final AppDatabase database, final List<Move> moves,
-                                   final List<MoveSequence> moveSequences) {
+    private static void insertData(final AppDatabase database, final List<Move> moves) {
         database.runInTransaction(() -> {
             database.moveDao().insertAll(moves.toArray(new Move[0]));
-            //database.moveSequenceDao().insertAll(moveSequences.toArray(new MoveSequence[0]));
         });
     }
 
