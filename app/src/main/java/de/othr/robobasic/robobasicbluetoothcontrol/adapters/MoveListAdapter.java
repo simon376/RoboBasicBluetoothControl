@@ -67,6 +67,7 @@ public class MoveListAdapter extends RecyclerView.Adapter<MoveListAdapter.ViewHo
 
     public void setMoves(List<Move> moves){
         mItems = moves;
+        Log.d(TAG, ("#items: " + mItems.size()));
         notifyDataSetChanged();
     }
 

@@ -1,6 +1,6 @@
 <!-- AppBarLayout is a wrapper for a Toolbar in order to apply scrolling effects. -->
 <!-- Note that AppBarLayout expects to be the first child nested within a CoordinatorLayout -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,7 +14,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay"
@@ -31,4 +31,4 @@
             tools:visibility="visible"
             android:visibility="invisible" />
 
-</LinearLayout>
+</com.google.android.material.appbar.AppBarLayout>

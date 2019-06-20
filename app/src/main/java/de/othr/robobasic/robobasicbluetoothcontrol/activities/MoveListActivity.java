@@ -1,6 +1,7 @@
 package de.othr.robobasic.robobasicbluetoothcontrol.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,9 +13,13 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.Objects;
 
 import de.othr.robobasic.robobasicbluetoothcontrol.R;
 import de.othr.robobasic.robobasicbluetoothcontrol.adapters.MoveListAdapter;
@@ -44,9 +49,14 @@ public class MoveListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_move_list);
 
+        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+
+
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+
 
         mRecyclerView = findViewById(R.id.rv_moves_sequences);
         mMoveListAdapter = new MoveListAdapter();
@@ -78,11 +88,13 @@ public class MoveListActivity extends AppCompatActivity {
 
 
         mViewModel.getMoves().observe(this, moves -> {
-            mMoveListAdapter.setMoves(moves);
-            int size = 0;
             if(moves != null)
-                size = moves.size();
-            Log.d(TAG, "ViewModel observed change, size:" + size);
+            {
+                Log.d(TAG, ("ViewModel observed change, size:" + moves.size()));
+                mMoveListAdapter.setMoves(moves);
+            }
+            else
+                Log.d(TAG, "ViewModel observed change, size: null");
             // this connects the Adapter to the ViewModel
             // list of moves has changed, update the UI (recyclerView)
         });
@@ -129,6 +141,7 @@ public class MoveListActivity extends AppCompatActivity {
     /** Defines callbacks for service binding, passed to bindService() */
     private final ServiceConnection connection = new ServiceConnection() {
 
+
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
@@ -145,9 +158,11 @@ public class MoveListActivity extends AppCompatActivity {
             mBluetoothService.connect(mDeviceAddress);
 
             // Tell the user about this for our demo.
-            //TODO: wird nie angezeigt
-            Toast.makeText(MoveListActivity.this, (R.string.bluetooth_service_connected + mDeviceAddress),
-                    Toast.LENGTH_SHORT).show();
+            View parent = findViewById(android.R.id.content);
+            Snackbar.make(parent, (getString(R.string.bluetooth_service_connected) + " "+ mDeviceAddress), Snackbar.LENGTH_SHORT);
+//
+//            Toast.makeText(MoveListActivity.this, (getString(R.string.bluetooth_service_connected) + " "+ mDeviceAddress),
+//                    Toast.LENGTH_SHORT).show();
 
         }
 
@@ -155,8 +170,11 @@ public class MoveListActivity extends AppCompatActivity {
         public void onServiceDisconnected(ComponentName arg0) {
             mBound = false;
             mBluetoothService = null;
-            Toast.makeText(MoveListActivity.this, R.string.bluetooth_service_disconnected,
-                    Toast.LENGTH_SHORT).show();
+            View parent = findViewById(android.R.id.content);
+            Snackbar.make(parent, getString(R.string.bluetooth_service_disconnected), Snackbar.LENGTH_SHORT);
+//
+//            Toast.makeText(MoveListActivity.this, getString(R.string.bluetooth_service_disconnected),
+//                    Toast.LENGTH_SHORT).show();
         }
     };
 

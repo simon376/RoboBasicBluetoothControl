@@ -15,7 +15,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Move.class}, version = 4)
+@Database(entities = {Move.class}, version = 5)
 public abstract class AppDatabase extends RoomDatabase {
     // Data Access Objects
     public abstract MoveDao moveDao();
@@ -34,7 +34,7 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = buildDatabase(context.getApplicationContext());
-                    INSTANCE.setDatabaseCreated();
+                    INSTANCE.updateDatabaseCreated(context);
                 }
             }
         }
@@ -77,6 +77,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static void insertData(final AppDatabase database, final List<Move> moves) {
         database.runInTransaction(() -> {
             database.moveDao().insertAll(moves.toArray(new Move[0]));
+            database.setDatabaseCreated();
         });
     }
 
@@ -106,8 +107,9 @@ public abstract class AppDatabase extends RoomDatabase {
             // Not needed if you only populate on creation.
             mDao.deleteAll();
             List<Move> moves = DataGenerator.generateMoves();
-            mDao.insertAll(moves.toArray(new Move[0]));
-            db.setDatabaseCreated();
+            AppDatabase.insertData(db, moves);
+//            mDao.insertAll(moves.toArray(new Move[0]));
+//            db.setDatabaseCreated();
 
             return null;
         }

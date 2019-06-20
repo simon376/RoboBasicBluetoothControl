@@ -7,14 +7,31 @@ android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".activities.MoveListActivity">
 
+    <include
+        layout="@layout/toolbar"
+        android:fitsSystemWindows="true"
+        />
 
-<include layout="@layout/content_move_list" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_moves_sequences"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"
+        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:listitem="@layout/item_move"
+        tools:spanCount="2" />
+
 <com.google.android.material.floatingactionbutton.FloatingActionButton
     android:id="@+id/fab"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom|end"
     android:layout_margin="@dimen/fab_margin"
-    app:srcCompat="@drawable/icon_plus" />
+    app:srcCompat="@drawable/icon_plus"
+    app:layout_anchor="@id/rv_moves_sequences"
+    app:layout_anchorGravity="bottom|right|end"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
