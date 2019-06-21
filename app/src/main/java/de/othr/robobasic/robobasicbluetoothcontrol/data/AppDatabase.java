@@ -34,7 +34,7 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = buildDatabase(context.getApplicationContext());
-                    INSTANCE.updateDatabaseCreated(context);
+                    INSTANCE.setDatabaseCreated();
                 }
             }
         }
@@ -49,7 +49,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase buildDatabase(final Context context) {
         return Room.databaseBuilder(context,
                 AppDatabase.class, DATABASE_NAME)
-                .allowMainThreadQueries() //TODO remove, for development only
+        //        .allowMainThreadQueries() //TODO remove, for development only
                 .fallbackToDestructiveMigration()
                 .addCallback(new Callback() {
                     @Override
@@ -77,7 +77,6 @@ public abstract class AppDatabase extends RoomDatabase {
     private static void insertData(final AppDatabase database, final List<Move> moves) {
         database.runInTransaction(() -> {
             database.moveDao().insertAll(moves.toArray(new Move[0]));
-            database.setDatabaseCreated();
         });
     }
 
@@ -107,9 +106,8 @@ public abstract class AppDatabase extends RoomDatabase {
             // Not needed if you only populate on creation.
             mDao.deleteAll();
             List<Move> moves = DataGenerator.generateMoves();
-            AppDatabase.insertData(db, moves);
-//            mDao.insertAll(moves.toArray(new Move[0]));
-//            db.setDatabaseCreated();
+            mDao.insertAll(moves.toArray(new Move[0]));
+            db.setDatabaseCreated();
 
             return null;
         }
