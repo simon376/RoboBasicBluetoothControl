@@ -49,15 +49,8 @@ public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase buildDatabase(final Context context) {
         return Room.databaseBuilder(context,
                 AppDatabase.class, DATABASE_NAME)
-                .allowMainThreadQueries() //TODO remove, for development only
                 .fallbackToDestructiveMigration()
-                .addCallback(new Callback() {
-                    @Override
-                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                        super.onCreate(db);
-                        new PopulateDbAsync(INSTANCE).execute();
-                    }
-                })
+                .addCallback(sRoomDatabaseCallback)
                 .build();
     }
 
@@ -74,19 +67,22 @@ public abstract class AppDatabase extends RoomDatabase {
         mIsDatabaseCreated.postValue(true);
     }
 
-    private static void insertData(final AppDatabase database, final List<Move> moves) {
-        database.runInTransaction(() -> {
-            database.moveDao().insertAll(moves.toArray(new Move[0]));
-            database.setDatabaseCreated();
-        });
-    }
+
 
     public LiveData<Boolean> getDatabaseCreated() {
         return mIsDatabaseCreated;
     }
 
 
+    private static RoomDatabase.Callback sRoomDatabaseCallback =
+            new RoomDatabase.Callback(){
 
+                @Override
+                public void onOpen (@NonNull SupportSQLiteDatabase db){
+                    super.onOpen(db);
+                    new PopulateDbAsync(INSTANCE).execute();
+                }
+            };
     /**
      * Populate the database in the background.
      * If you want to start with more words, just add them.
@@ -94,11 +90,11 @@ public abstract class AppDatabase extends RoomDatabase {
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
         private final MoveDao mDao;
-        private final AppDatabase db;
+        private final AppDatabase mDb;
 
         PopulateDbAsync(AppDatabase db) {
-            mDao = db.moveDao();
-            this.db = db;
+            mDb = db;
+            mDao = mDb.moveDao();
         }
 
         @Override
@@ -107,9 +103,8 @@ public abstract class AppDatabase extends RoomDatabase {
             // Not needed if you only populate on creation.
             mDao.deleteAll();
             List<Move> moves = DataGenerator.generateMoves();
-            AppDatabase.insertData(db, moves);
-//            mDao.insertAll(moves.toArray(new Move[0]));
-//            db.setDatabaseCreated();
+            mDao.insertAll(moves.toArray(new Move[0]));
+            mDb.setDatabaseCreated();
 
             return null;
         }
