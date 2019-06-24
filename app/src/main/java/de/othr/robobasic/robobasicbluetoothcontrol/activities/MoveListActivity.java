@@ -51,6 +51,7 @@ public class MoveListActivity extends AppCompatActivity {
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("RoboNova Move List");
 
 
         final Intent intent = getIntent();

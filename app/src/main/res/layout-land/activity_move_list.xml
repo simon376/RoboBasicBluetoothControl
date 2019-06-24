@@ -13,16 +13,15 @@ tools:context=".activities.MoveListActivity">
         android:id="@+id/rv_moves_sequences"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
-        app:spanCount="2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="4"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:listitem="@layout/item_move"
-        tools:spanCount="2" />
+        tools:spanCount="4"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        />
 
 
 
