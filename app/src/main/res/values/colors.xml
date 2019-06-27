@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="primaryColor">#ffa000</color>
-    <color name="primaryLightColor">#ffd149</color>
+    <color name="primaryLightColor" tools:keep="@color/primaryLightColor">#ffd149</color>
     <color name="primaryDarkColor">#c67100</color>
     <color name="secondaryColor">#37474F</color>
-    <color name="secondaryLightColor">#62727b</color>
-    <color name="secondaryDarkColor">#102027</color>
-    <color name="primaryTextColor">#000000</color>
+    <color name="secondaryLightColor" tools:keep="@color/secondaryLightColor">#62727b</color>
+    <color name="secondaryDarkColor" tools:keep="@color/secondaryDarkColor">#102027</color>
+    <color name="primaryTextColor" tools:keep="@color/primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#ffffff</color>
     <color name="background">#ffffff</color>
 

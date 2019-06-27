@@ -33,6 +33,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import de.othr.robobasic.robobasicbluetoothcontrol.R;
 import de.othr.robobasic.robobasicbluetoothcontrol.misc.BluetoothService;
@@ -58,8 +59,6 @@ public class DebugActivity extends AppCompatActivity {
     private EditText mDataField;
 
 
-    private boolean mConnected;
-
     private ShareActionProvider shareActionProvider;
 
     private ExpandableListView mGattServicesList;
@@ -67,10 +66,7 @@ public class DebugActivity extends AppCompatActivity {
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<>();
 
-    private BluetoothGattCharacteristic mNotifyCharacteristic, mWriteCharacteristic;
-
-    private final String LIST_NAME = "NAME";
-    private final String LIST_UUID = "UUID";
+    private BluetoothGattCharacteristic mNotifyCharacteristic;
 
     // Code to manage Service lifecycle.
     //TODO: Stay connected outside of this activity
@@ -104,7 +100,7 @@ public class DebugActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (BluetoothService.ACTION_GATT_CONNECTED.equals(action)) {
-                mConnected = true;
+                boolean mConnected = true;
                 mConnectionProgressBar.setVisibility(View.INVISIBLE);
                 runOnUiThread(() -> Toast.makeText(DebugActivity.this, getResources().getString(R.string.connected), Toast.LENGTH_SHORT).show());
 
@@ -155,7 +151,7 @@ public class DebugActivity extends AppCompatActivity {
                             //TODO: actually show notifications
                         }
                         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_WRITE) > 0) {
-                            mWriteCharacteristic = characteristic;
+                            mBluetoothService.setWritableCharacteristic(characteristic);
                             Log.d(TAG,"selected Write Characteristic.");
                         }
                         return true;
@@ -183,7 +179,7 @@ public class DebugActivity extends AppCompatActivity {
             mDeviceAddress = "unknown address";
 
         String toolbarTitle = mDeviceName + ": " + mDeviceAddress;
-        getSupportActionBar().setTitle(toolbarTitle);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(toolbarTitle);
 
 
         //Save selected device in SharedPreferences
@@ -211,7 +207,7 @@ public class DebugActivity extends AppCompatActivity {
         sendButton.setOnClickListener(v -> {
             String data = mDataField.getText().toString();
             //TODO: parse text
-            writeBLE(data);
+            mBluetoothService.writeDataToCharacteristic(data);
             mDataField.getText().clear();
         });
 
@@ -294,6 +290,8 @@ public class DebugActivity extends AppCompatActivity {
         mGattCharacteristics = new ArrayList<>();
 
         // Loops through available GATT Services.
+        String LIST_UUID = "UUID";
+        String LIST_NAME = "NAME";
         for (BluetoothGattService gattService : gattServices) {
             HashMap<String, String> currentServiceData = new HashMap<>();
             uuid = gattService.getUuid().toString();
@@ -353,28 +351,14 @@ public class DebugActivity extends AppCompatActivity {
     public void returnToMoveList(View view) {
         //open MoveListActivity
         //TODO: backbuttonbehaviour ?
-        // Stop Searching? is it already stopped? idk
+
+        // save last selected Characteristic to be used in the MoveListActivity
+
         final Intent intent = new Intent(DebugActivity.this, MoveListActivity.class);
         intent.putExtra(DebugActivity.EXTRAS_DEVICE_NAME, mDeviceName);
         intent.putExtra(DebugActivity.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
         startActivity(intent);
     }
 
-    public void disconnectDevice(View view) {
-        // TODO: make sure connection stays active until explicitly disconnected.
-        //  so we can still send data in different activity (movelistactivity)..
-        Log.d(TAG, "should disconnect device in the future");
-        Toast.makeText(this, "not implemented yet", Toast.LENGTH_SHORT).show();
-    }
-    /**
-     * TODO: method to create gatt service characteristic and write
-     *
-     */
-    private void writeBLE(String data){
-        if(mWriteCharacteristic != null){
-            mWriteCharacteristic.setValue(data);
-            mBluetoothService.writeCharacteristic(mWriteCharacteristic);
-        }
-    }
 
 }

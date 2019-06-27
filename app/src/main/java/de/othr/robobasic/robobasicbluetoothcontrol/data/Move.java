@@ -29,6 +29,11 @@ public class Move {
         this.name = name; this.message = message; this.drawable = R.drawable.icon_default;
     }
 
+    @Ignore
+    public Move(String name, String message, int drawableResourceId){
+        this.name = name; this.message = message; this.drawable = drawableResourceId;
+    }
+
     public String getName() {
         return name;
     }

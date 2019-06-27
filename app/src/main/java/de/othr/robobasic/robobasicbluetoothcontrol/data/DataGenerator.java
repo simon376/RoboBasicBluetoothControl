@@ -2,7 +2,6 @@ package de.othr.robobasic.robobasicbluetoothcontrol.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import de.othr.robobasic.robobasicbluetoothcontrol.R;
 
@@ -14,7 +13,16 @@ import static java.lang.Math.min;
 class DataGenerator {
 
     private static final String[] NAME = new String[]{
-            "Left Arm Up", "Right Arm Up", "Left Arm Down", "Right Arm Down", "Move Forward", "Move Backwards", "Turn around", "Sit Down", "Stand Up", "Reset"};
+            "Stable 1",
+            "Stable 2",
+            "Stable 3",
+            "King Kong",
+            "Clapping",
+            "Right Arm Chest",
+            "Dance 1",
+            "Dance 2",
+            "Dance 3",
+            "Dance 4"};
     private static final String[] SEQUENCES = new String[]{
             "Three-headed Monkey", "Rubber Chicken", "Pint of Grog", "Monocle", "Random Name 5", "test", "blablabla", "moveSequence", "number 9", "thisisit"};
     private static final String[] MESSAGE = new String[]{
@@ -23,20 +31,26 @@ class DataGenerator {
 
     static List<Move> generateMoves() {
         List<Move> moves = new ArrayList<>();
-        int max = min(NAME.length, MESSAGE.length);
-        for(int i = 0; i < max; i++){
-            moves.add(new Move(NAME[i], MESSAGE[i]));
-        }
-        moves.get(0).setDrawable(R.drawable.icon_left);
-        moves.get(1).setDrawable(R.drawable.icon_up);
-        moves.get(2).setDrawable(R.drawable.icon_down);
-        moves.get(3).setDrawable(R.drawable.icon_right);
-        moves.get(4).setDrawable(R.drawable.icon_walk);
-        moves.get(5).setDrawable(R.drawable.icon_return);
-        moves.get(6).setDrawable(R.drawable.icon_turn);
-        moves.get(6).setDrawable(R.drawable.icon_sit_down);
-        moves.get(7).setDrawable(R.drawable.icon_get_up);
-        moves.get(8).setDrawable(R.drawable.icon_default);
+
+        //TODO: use emojis instead of images? or Take actual pictures?
+        int i = 0;
+        moves.add(new Move("Stable 1",              "Move " + String.valueOf(i++), R.drawable.icon_default));
+        moves.add(new Move("Stable 2",              "Move " + String.valueOf(i++), R.drawable.icon_default));
+        moves.add(new Move("Stable 3",              "Move " + String.valueOf(i++), R.drawable.icon_default));
+        moves.add(new Move("King Kong",             "Move " + String.valueOf(i++), R.drawable.icon_default));
+        moves.add(new Move("Clapping",              "Move " + String.valueOf(i++), R.drawable.icon_default));
+        moves.add(new Move("Right Arm To Chest",    "Move " + String.valueOf(i++), R.drawable.icon_right));
+        moves.add(new Move("Dance 1",               "Move " + String.valueOf(i++), R.drawable.icon_default));
+        moves.add(new Move("Dance & Wave",          "Move " + String.valueOf(i++), R.drawable.icon_default));
+        moves.add(new Move("Dance, Wave & Rotate",  "Move " + String.valueOf(i++), R.drawable.icon_default));
+        moves.add(new Move("Dance & Kneel",         "Move " + String.valueOf(i++), R.drawable.icon_default));
+        moves.add(new Move("Waltz",                 "Move " + String.valueOf(i++), R.drawable.icon_default));
+        moves.add(new Move("Step",                  "Move " + String.valueOf(i++), R.drawable.icon_walk));
+        moves.add(new Move("Shuffle Step",          "Move " + String.valueOf(i++), R.drawable.icon_default));
+        moves.add(new Move("Wait until Test",       "Move " + String.valueOf(i++), R.drawable.icon_default));
+        moves.add(new Move("Stand up",              "Move " + String.valueOf(i++), R.drawable.icon_get_up));
+        moves.add(new Move("Wait One Second",       "Move " + String.valueOf(i++), R.drawable.icon_default));
+        moves.add(new Move("Wait Five Seconds",     "Move " + String.valueOf(i++), R.drawable.icon_default));
 
         return moves;
     }

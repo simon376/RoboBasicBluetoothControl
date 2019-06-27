@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -33,15 +34,14 @@ public class MoveListActivity extends AppCompatActivity {
 
     private final static String TAG = MoveListActivity.class.getSimpleName();
 
-    private MoveViewModel mViewModel;
-    private RecyclerView mRecyclerView;
     private MoveListAdapter mMoveListAdapter;
 
     private BluetoothService mBluetoothService;
+    private BluetoothGattCharacteristic mWriteCharacteristic;
+
     private boolean mBound = false;
 
     private String mDeviceAddress;
-    private String mDeviceName;
 
 
     @Override
@@ -51,15 +51,15 @@ public class MoveListActivity extends AppCompatActivity {
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("RoboNova Move List");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("RoboNova Move List");
 
 
         final Intent intent = getIntent();
-        mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+        String mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
 
-        mRecyclerView = findViewById(R.id.rv_moves_sequences);
+        RecyclerView mRecyclerView = findViewById(R.id.rv_moves_sequences);
         mMoveListAdapter = new MoveListAdapter();
         mMoveListAdapter.setClickHandler(move -> {
             int id = move.getId();
@@ -67,20 +67,22 @@ public class MoveListActivity extends AppCompatActivity {
             //TODO onItemClickBehaviour (send message)
             if(mBound){
                 if(mBluetoothService != null){
-                    String toast = "clicked move " + move.getName();
+                    String message = move.getMessage();
+                    String toast = "clicked move " + move.getName() + "; msg: " + message;
                     Toast.makeText(MoveListActivity.this, toast, Toast.LENGTH_SHORT).show();
                     Log.d(TAG, toast);
-                    // writeBLE(String.valueOf(id));
+                    if(!mBluetoothService.writeDataToCharacteristic(message)){
+                        Toast.makeText(MoveListActivity.this, "Write Characteristic not initialized.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
         });
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this,2));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mMoveListAdapter);
 
 
-        mViewModel = ViewModelProviders.of(this).get(MoveViewModel.class);
+        MoveViewModel mViewModel = ViewModelProviders.of(this).get(MoveViewModel.class);
 
         // now i can use the ViewModel to access the data which is saved in the database (unknownst of the viewmodel)
         // use an Observer to observe Changes on the LiveData List of Moves and add them to the RecyclerView
@@ -131,12 +133,12 @@ public class MoveListActivity extends AppCompatActivity {
 
 //    // TODO: extract method
 //    // TODO: Characteristic sollte global oder in SharedPref gespeichert werden
-//    private void writeBLE(String data){
-//        if(mWriteCharacteristic != null){
-//            mWriteCharacteristic.setValue(data);
-//            mBluetoothService.writeCharacteristic(mWriteCharacteristic);
-//        }
-//    }
+    private void writeBLE(String data){
+        if(mWriteCharacteristic != null){
+            mWriteCharacteristic.setValue(data);
+            mBluetoothService.writeCharacteristic(mWriteCharacteristic);
+        }
+    }
 
 
     /** Defines callbacks for service binding, passed to bindService() */

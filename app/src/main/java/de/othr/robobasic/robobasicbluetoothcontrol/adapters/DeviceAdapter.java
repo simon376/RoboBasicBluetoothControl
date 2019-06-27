@@ -50,7 +50,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
             mNameTextView = itemView.findViewById(R.id.tv_item_device_name);
             mAddressTextView = itemView.findViewById(R.id.tv_item_device_mac);
-            mClassTextView = itemView.findViewById(R.id.tv_item_device_class);
+            mClassTextView = itemView.findViewById(R.id.tv_read);
 
             // Setup the click listener
             itemView.setOnClickListener(v -> {

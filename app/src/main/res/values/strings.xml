@@ -2,7 +2,6 @@
     <string name="app_name">RoboBasicBluetoothControl</string>
     <string name="device_name">Device Name</string>
     <string name="mac_address">MAC address</string>
-    <string name="main_info">Available BLE Devices will be shown soon.\nselect one to connect to it.\nscan will be stopped once a device was selected.</string>
     <string name="debug">debug</string>
     <string name="send">send</string>
     <string name="send_info">send some data</string>
@@ -39,10 +38,14 @@
     <string name="saved_mac_address_key">de.othr.robobasic.robobasicbluetoothcontrol.MAC_ADDRESS_KEY</string>
     <string name="cont_descr_move_icon">Move Icon</string>
     <string name="move_list">move list</string>
-    <string name="ok">ok</string>
+    <string name="ok">OK</string>
     <string name="location_access_req">location access required</string>
     <string name="toolbar_title">Toolbar Title</string>
     <string name="scanning">scanning..</string>
     <string name="share">Share</string>
     <string name="send_to">send terminal content to</string>
+    <string name="unknown_uuid">unknown uuid</string>
+    <string name="notify">Notify</string>
+    <string name="read">Read</string>
+    <string name="write">Write</string>
 </resources>

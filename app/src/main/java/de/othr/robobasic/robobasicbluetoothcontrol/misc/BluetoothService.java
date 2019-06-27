@@ -48,6 +48,8 @@ public class BluetoothService extends Service {
     public final static String EXTRA_DATA =
             "de.othr.robobasic.EXTRA_DATA";
 
+    private BluetoothGattCharacteristic mWriteCharacteristic;
+
     //TODO: RoboNova Standardwerte für Characteristics / Services eintragen
 //    public final static UUID UUID_ROBONOVA =
 //            UUID.fromString(RoboNovaGattAttributes.ROBONOVA_CHARACTERISTIC);
@@ -302,6 +304,48 @@ public class BluetoothService extends Service {
         mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
 
     }
+
+    /**
+     * sets member write characteristic to be used in following write function calls.
+     *
+     * @param characteristic Characteristic to act on.
+     *
+     */
+    public void setWritableCharacteristic(BluetoothGattCharacteristic characteristic) {
+        if (mBluetoothAdapter == null || mBluetoothGatt == null) {
+            Log.w(TAG, "BluetoothAdapter not initialized");
+            return;
+        }
+        if(characteristic != null){
+            mWriteCharacteristic = characteristic;
+        }
+    }
+
+    /**
+     * Requst a write on previously set WriteCharacteristic. The write result is reported
+     * asynchronously through the {@code BluetoothGattCallback#onCharacteristicWrite(android.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)}
+     * callback.
+     * @return true, if Characteristic is set and the write operation was initiated successfully
+     */
+    public boolean writeDataToCharacteristic(String data) {
+        if (mBluetoothGatt == null || data == null) {
+            Log.w(TAG, "BluetoothAdapter not initialized");
+            return false;
+        }
+        if(mWriteCharacteristic != null){
+            mWriteCharacteristic.setValue(data);
+            mBluetoothGatt.writeCharacteristic(mWriteCharacteristic);
+            return true;
+        }
+        else{
+            Log.e(TAG, "WriteCharacteristic not initialized");
+            return false;
+        }
+
+    }
+
+
+
 
     /**
      * Retrieves a list of supported GATT services on the connected device. This should be

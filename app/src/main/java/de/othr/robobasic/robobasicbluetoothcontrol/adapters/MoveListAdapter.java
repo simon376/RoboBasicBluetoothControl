@@ -91,7 +91,7 @@ public class MoveListAdapter extends RecyclerView.Adapter<MoveListAdapter.ViewHo
         else{
             // Covers the case of data not being ready yet.
             Log.i(TAG, "OnBindViewHolder data not ready.");
-            holder.mNameTextView.setText(String.format("Move #%d", position));
+            holder.mNameTextView.setText("move # " + position);
         }
     }
 

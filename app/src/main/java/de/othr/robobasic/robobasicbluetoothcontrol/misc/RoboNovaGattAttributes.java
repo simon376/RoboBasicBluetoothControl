@@ -1,23 +1,11 @@
 package de.othr.robobasic.robobasicbluetoothcontrol.misc;
 
-import android.content.res.AssetManager;
-import android.util.Log;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 
 /**
  * This class includes a small subset of standard GATT attributes for demonstration purposes.
  */
 public abstract class RoboNovaGattAttributes {
-    //TODO: define own characteristic / service
-    static final String ROBONOVA_CHARACTERISTIC = "00002a37-0000-1000-8000-00805f9b34fb";
-    static final String ROBONOVA_SERVICE = "0000180d-0000-1000-8000-00805f9b34fb";
 
     private static final HashMap<String,String> services = new HashMap<>();
     private static final HashMap<String,String> characteristics = new HashMap<>();
@@ -27,6 +15,9 @@ public abstract class RoboNovaGattAttributes {
     }
 
     private static void addData() {
+        characteristics.put("53530000","RoboBASIC Custom Characteristic");
+        services.put("53530000","RoboBASIC Escort Service");
+
         characteristics.put("00002A7E","Aerobic Heart Rate Lower Limit");
         characteristics.put("00002A84","Aerobic Heart Rate Upper Limit");
         characteristics.put("00002A7F","Aerobic Threshold");

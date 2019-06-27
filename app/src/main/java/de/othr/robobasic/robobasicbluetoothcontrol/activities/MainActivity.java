@@ -32,11 +32,10 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import de.othr.robobasic.robobasicbluetoothcontrol.R;
 import de.othr.robobasic.robobasicbluetoothcontrol.adapters.DeviceAdapter;
-
-import static java.lang.Math.min;
 
 /**
  * MainActivity starts search for Bluetooth devices and shows them in a RecyclerView,
@@ -58,10 +57,8 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothLeScanner mBluetoothScanner;
     private Handler mHandler;
     private DeviceAdapter mDeviceListAdapter;
-    RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView;
 
-
-    private TextView mInfoTextView;
 
     // Stops scanning after 10 seconds.
     private static final long   SCAN_PERIOD = 10000;
@@ -79,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle(getString(R.string.app_name));
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.app_name));
 
         mLayout = findViewById(R.id.main_layout);
         mScanProgressBar = findViewById(R.id.progressBar);
@@ -95,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
         mBluetoothAdapter = bluetoothManager.getAdapter();
         mBluetoothScanner = mBluetoothAdapter.getBluetoothLeScanner();
 
-        //TODO: Add additional AlertDialog for Location ? if needed
 
         // Ensures Bluetooth is available on the device and it is enabled. If not,
         // displays a dialog requesting user permission to enable Bluetooth.
@@ -108,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
          // setup devicelist
 
         //for debugging only
-        //TODO: remove once device was detected
         createSampleData(3);
 
         mDeviceListAdapter = new DeviceAdapter(mDevices);
