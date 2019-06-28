@@ -3,7 +3,7 @@ package de.othr.robobasic.robobasicbluetoothcontrol.misc;
 import java.util.HashMap;
 
 /**
- * This class includes a small subset of standard GATT attributes for demonstration purposes.
+ * This abstract class defines methods to find String descriptions for GATT Services and Characteristics
  */
 public abstract class RoboNovaGattAttributes {
 
@@ -288,12 +288,26 @@ public abstract class RoboNovaGattAttributes {
     }
 
 
+    /**
+     * Lookup characteristics string.
+     *
+     * @param uuid        the Characteristics UUID
+     * @param defaultName the default name to be returned if no matching Description was found
+     * @return the string description
+     */
     public static String lookupCharacteristics(String uuid, String defaultName){
         String uuidCharNumber = uuid.substring(0, 8).toUpperCase();
         String name = characteristics.get(uuidCharNumber);
         return name == null ? defaultName : name;
     }
 
+    /**
+     * Lookup service string.
+     *
+     * @param uuid        the Service UUID
+     * @param defaultName the default name to be returned if no matching Description was found
+     * @return the string description
+     */
     public static String lookupService(String uuid, String defaultName){
         String uuidServiceNumber = uuid.substring(0, 8).toUpperCase();
         String name = services.get(uuidServiceNumber);

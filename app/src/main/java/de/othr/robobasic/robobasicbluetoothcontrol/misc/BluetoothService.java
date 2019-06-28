@@ -50,11 +50,6 @@ public class BluetoothService extends Service {
 
     private BluetoothGattCharacteristic mWriteCharacteristic;
 
-    //TODO: RoboNova Standardwerte für Characteristics / Services eintragen
-//    public final static UUID UUID_ROBONOVA =
-//            UUID.fromString(RoboNovaGattAttributes.ROBONOVA_CHARACTERISTIC);
-//
-
     private final IBinder mBinder = new LocalBinder();
 
     /**
@@ -62,7 +57,12 @@ public class BluetoothService extends Service {
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
     public class LocalBinder extends Binder {
-        // Return this instance of BluetoothService so clients can call public methods
+        /**
+         * Gets service.
+         *
+         * @return the service
+         */
+// Return this instance of BluetoothService so clients can call public methods
         public BluetoothService getService() {
             return BluetoothService.this;
         }
@@ -121,8 +121,6 @@ public class BluetoothService extends Service {
                                           BluetoothGattCharacteristic characteristic,
                                           int status) {
             Log.d(TAG, "------------- onCharacteristicWrite status: " + status);
-
-            // do somethings here.
         }
 
         @Override
@@ -141,9 +139,6 @@ public class BluetoothService extends Service {
                                  final BluetoothGattCharacteristic characteristic) {
         final Intent intent = new Intent(action);
 
-        //TODO: Parse the information received
-        // TODO: Find out which GATT Characteristics are used by the bluetooth controller by default
-
         // For all other profiles, writes the data formatted in HEX.
         final byte[] data = characteristic.getValue();
         if (data != null && data.length > 0) {
@@ -152,7 +147,6 @@ public class BluetoothService extends Service {
                 stringBuilder.append(String.format("%02X ", byteChar));
             intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
         }
-
         sendBroadcast(intent);
     }
 
@@ -197,11 +191,9 @@ public class BluetoothService extends Service {
      * Connects to the GATT server hosted on the Bluetooth LE device.
      *
      * @param address The device address of the destination device.
-     *
      * @return Return true if the connection is initiated successfully. The connection result
-     *         is reported asynchronously through the
-     *         {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
-     *         callback.
+     * is reported asynchronously through the
+     * {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)} callback.
      */
     public boolean connect(final String address) {
         if (mBluetoothAdapter == null || address == null) {
@@ -263,7 +255,8 @@ public class BluetoothService extends Service {
 
     /**
      * Request a read on a given {@code BluetoothGattCharacteristic}. The read result is reported
-     * asynchronously through the {@code BluetoothGattCallback#onCharacteristicRead(android.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)}
+     * asynchronously through the
+     * {@code BluetoothGattCallback#onCharacteristicRead(android.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)}
      * callback.
      *
      * @param characteristic The characteristic to read from.
@@ -277,9 +270,12 @@ public class BluetoothService extends Service {
     }
 
     /**
-     * Requst a write on a give {@code BluetoothGattCharacteristic}. The write result is reported
-     * asynchronously through the {@code BluetoothGattCallback#onCharacteristicWrite(android.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)}
+     * Request a write on a give {@code BluetoothGattCharacteristic}. The write result is reported
+     * asynchronously through the
+     * {@code BluetoothGattCallback#onCharacteristicWrite(android.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)}
      * callback.
+     *
+     * @param characteristic the characteristic
      */
     public void writeCharacteristic(BluetoothGattCharacteristic characteristic) {
         if (mBluetoothGatt == null) {
@@ -293,7 +289,7 @@ public class BluetoothService extends Service {
      * Enables or disables notification on a give characteristic.
      *
      * @param characteristic Characteristic to act on.
-     * @param enabled If true, enable notification.  False otherwise.
+     * @param enabled        If true, enable notification.  False otherwise.
      */
     public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic,
                                               boolean enabled) {
@@ -309,7 +305,6 @@ public class BluetoothService extends Service {
      * sets member write characteristic to be used in following write function calls.
      *
      * @param characteristic Characteristic to act on.
-     *
      */
     public void setWritableCharacteristic(BluetoothGattCharacteristic characteristic) {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
@@ -322,9 +317,12 @@ public class BluetoothService extends Service {
     }
 
     /**
-     * Requst a write on previously set WriteCharacteristic. The write result is reported
-     * asynchronously through the {@code BluetoothGattCallback#onCharacteristicWrite(android.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)}
+     * Request a write on previously set WriteCharacteristic. The write result is reported
+     * asynchronously through the
+     * {@code BluetoothGattCallback#onCharacteristicWrite(android.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)}
      * callback.
+     *
+     * @param data the data
      * @return true, if Characteristic is set and the write operation was initiated successfully
      */
     public boolean writeDataToCharacteristic(String data) {
@@ -343,8 +341,6 @@ public class BluetoothService extends Service {
         }
 
     }
-
-
 
 
     /**

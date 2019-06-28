@@ -1,13 +1,5 @@
 package de.othr.robobasic.robobasicbluetoothcontrol.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -26,7 +18,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -40,10 +39,6 @@ import de.othr.robobasic.robobasicbluetoothcontrol.adapters.DeviceAdapter;
 /**
  * MainActivity starts search for Bluetooth devices and shows them in a RecyclerView,
  * connect to one by clicking on it
- *
- *
- * in the future this will only be shown once as a splash-screen type of thing and movelistactivity
- * should be the entrypoint of the app
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -74,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Set up UI
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.app_name));
@@ -101,11 +97,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
          mRecyclerView = findViewById(R.id.rv_main_devices);
-         // setup devicelist
 
-        //for debugging only
+        //show sample devices for debugging purposes
         createSampleData(3);
 
+        //setup device list
         mDeviceListAdapter = new DeviceAdapter(mDevices);
         mDeviceListAdapter.setOnItemClickListener((itemView, position) -> {
             final BluetoothDevice device = mDevices.get(position);
@@ -134,6 +130,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Start scanning for Bluetooth devices.
+     *
+     * @param view the view
+     */
     public void startScanning(View view) {
         // Check if the Location permission has been granted
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -153,8 +154,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-    //TODO: move to SplashScreenActivity
 
     /**
      * Requests the {@link android.Manifest.permission#ACCESS_COARSE_LOCATION} permission.
@@ -184,10 +183,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Callback for the result from requesting permissions.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        // BEGIN_INCLUDE(onRequestPermissionsResult)
         if (requestCode == PERMISSION_REQUEST_LOCATION) {
             // Request for camera permission.
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -197,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
                         .show();
 
 
-            scanDevice(true);
+                scanDevice(true);
 
             } else {
                 // Permission request was denied.
@@ -206,10 +207,14 @@ public class MainActivity extends AppCompatActivity {
                         .show();
             }
         }
-        // END_INCLUDE(onRequestPermissionsResult)
     }
 
 
+    /**
+     * creates sample Bluetooth devices and adds them to the Device List which is shown using the {@link DeviceAdapter}
+     *
+     * @param num number of Devices to create
+     */
     private void createSampleData(int num) {
         String[] addresses = {"00:11:22:33:AA:BB","44:55:66:77:88:BB","00:22:44:66:AA:BB"};
         for (int i = 0; i < num; i++) {
@@ -218,14 +223,11 @@ public class MainActivity extends AppCompatActivity {
                 BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
                 if(device != null){
                     mDevices.add(device);
-                }
-                else
-                {
+                } else {
                     String error = "device is null breakpoint " + address; //exception handling at its finest... lol
                     Log.e(TAG, error);
                 }
-            }
-            else{
+            } else{
                 String error = "bluetooth address invalid breakpoint " + address;
                 Log.e(TAG, error);
             }
@@ -246,7 +248,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         scanDevice(false);
-       // mDeviceListAdapter.clear();
     }
 
 
@@ -263,20 +264,21 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // Initializes list view adapter.
-//        mLeDeviceListAdapter = new LeDeviceListAdapter();
-//        setListAdapter(mLeDeviceListAdapter);
         mDeviceListAdapter.notifyDataSetChanged();
 
     }
 
+    /**
+     * Tell the {@link BluetoothLeScanner} to start or stop scanning for Bluetooth Devices
+     * @param enable start or stop
+     */
     private void scanDevice(final boolean enable) {
         if (enable) {
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(() -> {
                 mBluetoothScanner.stopScan(mScanCallback);
                 mScanProgressBar.setVisibility(View.INVISIBLE);
-              //  invalidateOptionsMenu();
+                //  invalidateOptionsMenu();
             }, SCAN_PERIOD);
 
             mBluetoothScanner.startScan(mScanCallback);
@@ -289,7 +291,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // Device scan callback.
+    /**
+     * BLE Device Scan Callback -> add new Devices to List when found
+     */
     private final ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {

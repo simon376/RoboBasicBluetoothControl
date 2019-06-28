@@ -1,11 +1,5 @@
 package de.othr.robobasic.robobasicbluetoothcontrol.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,6 +10,11 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -30,6 +29,9 @@ import de.othr.robobasic.robobasicbluetoothcontrol.viewmodel.MoveViewModel;
 import static de.othr.robobasic.robobasicbluetoothcontrol.activities.DebugActivity.EXTRAS_DEVICE_ADDRESS;
 import static de.othr.robobasic.robobasicbluetoothcontrol.activities.DebugActivity.EXTRAS_DEVICE_NAME;
 
+/**
+ * The MoveListActivity displays Moves saved in the Database which can be used to control the robot.
+ */
 public class MoveListActivity extends AppCompatActivity {
 
     private final static String TAG = MoveListActivity.class.getSimpleName();
@@ -49,11 +51,12 @@ public class MoveListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_move_list);
 
+        // set up UI
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("RoboNova Move List");
 
-
+        // get Intent Extras
         final Intent intent = getIntent();
         String mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
@@ -64,7 +67,6 @@ public class MoveListActivity extends AppCompatActivity {
         mMoveListAdapter.setClickHandler(move -> {
             int id = move.getId();
             Log.d(TAG, "clicked on ListItem @ id "+ id);
-            //TODO onItemClickBehaviour (send message)
             if(mBound){
                 if(mBluetoothService != null){
                     String message = move.getMessage();
@@ -86,25 +88,16 @@ public class MoveListActivity extends AppCompatActivity {
 
         // now i can use the ViewModel to access the data which is saved in the database (unknownst of the viewmodel)
         // use an Observer to observe Changes on the LiveData List of Moves and add them to the RecyclerView
-
-        //TODO get deviceAddress from SharedPreferences or Intent-Extras (see other branch)
-
-
         mViewModel.getMoves().observe(this, moves -> {
-            if(moves != null)
-            {
+            if(moves != null) {
                 Log.d(TAG, ("ViewModel observed change, size:" + moves.size()));
                 mMoveListAdapter.setMoves(moves);
-            }
-            else
+            } else
                 Log.d(TAG, "ViewModel observed change, size: null");
             // this connects the Adapter to the ViewModel
             // list of moves has changed, update the UI (recyclerView)
         });
 
-
-
-        //TODO: hide on scroll
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> {
             Intent intent1 = new Intent(MoveListActivity.this, CreateMoveSequenceActivity.class);
@@ -131,19 +124,9 @@ public class MoveListActivity extends AppCompatActivity {
         mBound = false;
     }
 
-//    // TODO: extract method
-//    // TODO: Characteristic sollte global oder in SharedPref gespeichert werden
-    private void writeBLE(String data){
-        if(mWriteCharacteristic != null){
-            mWriteCharacteristic.setValue(data);
-            mBluetoothService.writeCharacteristic(mWriteCharacteristic);
-        }
-    }
-
 
     /** Defines callbacks for service binding, passed to bindService() */
     private final ServiceConnection connection = new ServiceConnection() {
-
 
         @Override
         public void onServiceConnected(ComponentName className,
@@ -160,12 +143,9 @@ public class MoveListActivity extends AppCompatActivity {
             // Automatically connects to the device upon successful start-up initialization.
             mBluetoothService.connect(mDeviceAddress);
 
-            // Tell the user about this for our demo.
+            // Tell the user about this.
             View parent = findViewById(android.R.id.content);
             Snackbar.make(parent, (getString(R.string.bluetooth_service_connected) + " "+ mDeviceAddress), Snackbar.LENGTH_SHORT);
-//
-//            Toast.makeText(MoveListActivity.this, (getString(R.string.bluetooth_service_connected) + " "+ mDeviceAddress),
-//                    Toast.LENGTH_SHORT).show();
 
         }
 
@@ -175,9 +155,6 @@ public class MoveListActivity extends AppCompatActivity {
             mBluetoothService = null;
             View parent = findViewById(android.R.id.content);
             Snackbar.make(parent, getString(R.string.bluetooth_service_disconnected), Snackbar.LENGTH_SHORT);
-//
-//            Toast.makeText(MoveListActivity.this, getString(R.string.bluetooth_service_disconnected),
-//                    Toast.LENGTH_SHORT).show();
         }
     };
 

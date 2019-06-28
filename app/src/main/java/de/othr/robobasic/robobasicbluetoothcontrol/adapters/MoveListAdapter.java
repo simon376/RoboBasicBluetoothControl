@@ -16,17 +16,20 @@ import de.othr.robobasic.robobasicbluetoothcontrol.R;
 import de.othr.robobasic.robobasicbluetoothcontrol.data.Move;
 
 /**
- * Adapter to use with a RecyclerView to show the List of Moves and MoveSequences (no seperate treatment!)
+ * Adapter to use with a RecyclerView to show the List of Moves (and MoveSequences)
+ * for now, only {@link Move}s are supported, MoveSequences were removed to keep the code clear,
+ * since there wasn't enough time to implement everything
  */
-//for now, only MOVEs are supported, MoveSequences might be added back in later
 public class MoveListAdapter extends RecyclerView.Adapter<MoveListAdapter.ViewHolder> {
 
-
     private List<Move> mItems;
-
     private final String TAG = MoveListAdapter.class.getSimpleName();
 
-
+    /**
+     * Sets OnItemClick handler.
+     *
+     * @param mClickHandler the m click handler
+     */
     public void setClickHandler(MoveListAdapterOnItemClickHandler mClickHandler) {
         this.mClickHandler = mClickHandler;
     }
@@ -37,14 +40,27 @@ public class MoveListAdapter extends RecyclerView.Adapter<MoveListAdapter.ViewHo
      * The interface that receives onItemClick messages.
      */
     public interface MoveListAdapterOnItemClickHandler {
+        /**
+         * On item click.
+         *
+         * @param move selected move
+         */
         void onItemClick(Move move);
     }
 
 
-
+    /**
+     * ViewHolder.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView mNameTextView;
         private final ImageView mIconView;
+
+        /**
+         * Instantiates a new View holder.
+         *
+         * @param itemView the item view
+         */
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
@@ -64,7 +80,11 @@ public class MoveListAdapter extends RecyclerView.Adapter<MoveListAdapter.ViewHo
     }
 
 
-
+    /**
+     * Set list of moves.
+     *
+     * @param moves the List of Moves
+     */
     public void setMoves(List<Move> moves){
         mItems = moves;
         Log.d(TAG, ("#items: " + mItems.size()));

@@ -1,10 +1,5 @@
 package de.othr.robobasic.robobasicbluetoothcontrol.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.ShareActionProvider;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.MenuItemCompat;
-
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
@@ -25,10 +20,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
-
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ShareActionProvider;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,9 +39,9 @@ import de.othr.robobasic.robobasicbluetoothcontrol.misc.BluetoothService;
 import de.othr.robobasic.robobasicbluetoothcontrol.misc.RoboNovaGattAttributes;
 
 /**
- * DebugActivity will be used to send custom text messages to the robot to test the bluetooth connection
- * and print its responds to a View (RecyclerView for now, 1 item = 1 message)
- *
+ * DebugActivity is used to send custom text messages to the robot to test the bluetooth connection
+ * and print its responds to a Terminal
+ * <p>
  * the Activity communicates with  {@code BluetoothService} which in turn interacts with the Bluetooth LE API
  */
 public class DebugActivity extends AppCompatActivity {
@@ -68,8 +67,9 @@ public class DebugActivity extends AppCompatActivity {
 
     private BluetoothGattCharacteristic mNotifyCharacteristic;
 
-    // Code to manage Service lifecycle.
-    //TODO: Stay connected outside of this activity
+    /**
+     * A Service Connection is used to manage the Service's lifecycle.
+     */
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -89,12 +89,14 @@ public class DebugActivity extends AppCompatActivity {
         }
     };
 
-    // Handles various events fired by the Service.
-        // ACTION_GATT_CONNECTED:           connected to a GATT server.
-        // ACTION_GATT_DISCONNECTED:        disconnected from a GATT server.
-        // ACTION_GATT_SERVICES_DISCOVERED: discovered GATT services.
-        // ACTION_DATA_AVAILABLE:           received data from the device.  This can be a result of read
-        //                                  or notification operations.
+    /**
+     * The BroadcastReceiver is used to receive Broadcasts from the Android OS,
+     * which we're sent by the BluetoothService, reacting to Bluetooth GATT Events.
+     * ACTION_GATT_CONNECTED:           connected to a GATT server.
+     * ACTION_GATT_DISCONNECTED:        disconnected from a GATT server.
+     * ACTION_GATT_SERVICES_DISCOVERED: discovered GATT services.
+     * ACTION_DATA_AVAILABLE:           received data from the device.  This can be a result of read or notification operations.
+     */
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -105,8 +107,6 @@ public class DebugActivity extends AppCompatActivity {
                 runOnUiThread(() -> Toast.makeText(DebugActivity.this, getResources().getString(R.string.connected), Toast.LENGTH_SHORT).show());
 
             } else if (BluetoothService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                //TODO: display error
-                //TODO: use pop-up like location permission error ?
                 mConnectionProgressBar.setVisibility(View.INVISIBLE);
                 runOnUiThread(() -> Toast.makeText(DebugActivity.this, getResources().getString(R.string.disconnected), Toast.LENGTH_SHORT).show());
 
@@ -119,10 +119,9 @@ public class DebugActivity extends AppCompatActivity {
         }
     };
 
-    // If a given GATT characteristic is selected, check for supported features.  This sample
-    // demonstrates 'Read' and 'Notify' features.  See
-    // http://d.android.com/reference/android/bluetooth/BluetoothGatt.html for the complete
-    // list of supported characteristic features.
+    /**
+     * OnClickListener for the ExpandableListView containing the GATT Services & Characteristics.
+     */
     private final ExpandableListView.OnChildClickListener servicesListClickListener =
             new ExpandableListView.OnChildClickListener() {
                 @Override
@@ -148,7 +147,6 @@ public class DebugActivity extends AppCompatActivity {
                             mBluetoothService.setCharacteristicNotification(
                                     characteristic, true);
                             Log.d(TAG,"selected Notify Characteristic, enabling notifications.");
-                            //TODO: actually show notifications
                         }
                         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_WRITE) > 0) {
                             mBluetoothService.setWritableCharacteristic(characteristic);
@@ -165,12 +163,8 @@ public class DebugActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_debug);
 
-        Toolbar myToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(myToolbar);
-
-
+        // get selected Device Data from Intent Extras to connect to it.
         final Intent intent = getIntent();
-
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
         if(mDeviceName == null)
@@ -178,19 +172,20 @@ public class DebugActivity extends AppCompatActivity {
         if(mDeviceAddress == null)
             mDeviceAddress = "unknown address";
 
-        String toolbarTitle = mDeviceName + ": " + mDeviceAddress;
-        Objects.requireNonNull(getSupportActionBar()).setTitle(toolbarTitle);
-
-
         //Save selected device in SharedPreferences
-        //TODO: add Characteristics
-        //TODO: use that stuff - forget SplashScreenActivity, just show a pop-up instead (only if device is found again!)
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(getString(R.string.saved_mac_address_key), mDeviceAddress);
         editor.apply();
 
+
         // Sets up UI references.
+        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+
+        String toolbarTitle = mDeviceName + ": " + mDeviceAddress;
+        Objects.requireNonNull(getSupportActionBar()).setTitle(toolbarTitle);
+
         mConnectionProgressBar = findViewById(R.id.progressBar);
         mConnectionProgressBar.setIndeterminate(true);
         mConnectionProgressBar.setVisibility(View.VISIBLE);
@@ -206,16 +201,13 @@ public class DebugActivity extends AppCompatActivity {
         Button sendButton = findViewById(R.id.btn_dbg_send);
         sendButton.setOnClickListener(v -> {
             String data = mDataField.getText().toString();
-            //TODO: parse text
             mBluetoothService.writeDataToCharacteristic(data);
             mDataField.getText().clear();
         });
 
-
-
+        //Connect to BluetoothService
         Intent gattServiceIntent = new Intent(this, BluetoothService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-        //Bind activity to service (or other way around.. whatever)
     }
 
     @Override
@@ -233,7 +225,7 @@ public class DebugActivity extends AppCompatActivity {
         return true;
     }
 
-    // Call to update the share intent
+    /** method to update the share intent data */
     private void setShareIntent(String text) {
 
         Intent sendIntent = new Intent();
@@ -269,16 +261,19 @@ public class DebugActivity extends AppCompatActivity {
         mBluetoothService = null;
     }
 
-
+    /** method to update the terminal text data */
     private void displayData(String data) {
         if (data != null) {
             mTerminal.append(("\n" + data));
             setShareIntent(mTerminal.getText().toString());
         }
     }
-    // Demonstrates how to iterate through the supported GATT Services/Characteristics.
-    // In this sample, we populate the data structure that is bound to the ExpandableListView
-    // on the UI.
+
+    /**
+     * Iterates through all the GATT Services and displays all found Services & Characteristics
+     * in a ExpandableListView
+     * @param gattServices List of Bluetooth GATT Services
+     */
     private void displayGattServices(List<BluetoothGattService> gattServices) {
         if (gattServices == null) return;
         String uuid;
@@ -297,8 +292,6 @@ public class DebugActivity extends AppCompatActivity {
             uuid = gattService.getUuid().toString();
             currentServiceData.put(
                     LIST_NAME, RoboNovaGattAttributes.lookupService(uuid, unknownServiceString));
-//            currentServiceData.put(
-//                    LIST_NAME, RoboNovaGattAttributes.lookup(uuid, unknownServiceString));
             currentServiceData.put(LIST_UUID, uuid);
             gattServiceData.add(currentServiceData);
 
@@ -316,8 +309,6 @@ public class DebugActivity extends AppCompatActivity {
                 uuid = gattCharacteristic.getUuid().toString();
                 currentCharaData.put(
                         LIST_NAME, RoboNovaGattAttributes.lookupCharacteristics(uuid, unknownCharaString));
-//                currentCharaData.put(
-//                        LIST_NAME, RoboNovaGattAttributes.lookup(uuid, unknownCharaString));
                 currentCharaData.put(LIST_UUID, uuid);
                 gattCharacteristicGroupData.add(currentCharaData);
             }
@@ -339,6 +330,10 @@ public class DebugActivity extends AppCompatActivity {
         mGattServicesList.setAdapter(gattServiceAdapter);
     }
 
+    /**
+     * Create an Intent Filter used to filter the Broadcasts received by the BroadcastReceiver
+     * @return IntentFilter
+     */
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothService.ACTION_GATT_CONNECTED);
@@ -348,12 +343,13 @@ public class DebugActivity extends AppCompatActivity {
         return intentFilter;
     }
 
+    /**
+     * Return to move list.
+     *
+     * @param view the view
+     */
     public void returnToMoveList(View view) {
         //open MoveListActivity
-        //TODO: backbuttonbehaviour ?
-
-        // save last selected Characteristic to be used in the MoveListActivity
-
         final Intent intent = new Intent(DebugActivity.this, MoveListActivity.class);
         intent.putExtra(DebugActivity.EXTRAS_DEVICE_NAME, mDeviceName);
         intent.putExtra(DebugActivity.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);

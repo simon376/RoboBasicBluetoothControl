@@ -27,7 +27,7 @@
         </activity>
         <activity android:name=".activities.CreateMoveSequenceActivity" />
         <activity android:name=".activities.DebugActivity"
-                  android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="adjustPan" />
         <service android:name=".misc.BluetoothService" android:enabled="true"/>
     </application>
 

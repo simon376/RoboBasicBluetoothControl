@@ -3,8 +3,6 @@ package de.othr.robobasic.robobasicbluetoothcontrol.data;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
@@ -14,9 +12,17 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import java.util.List;
+
+/**
+ * the Room App Database which stores all Moves (MoveSequences were removed again).
+ * Implements Singleton Pattern
+ */
 @Database(entities = {Move.class}, version = 5)
 public abstract class AppDatabase extends RoomDatabase {
-    // Data Access Objects
+
+
+    // Data Access Object
     public abstract MoveDao moveDao();
 
     @VisibleForTesting
@@ -24,10 +30,16 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private final MutableLiveData<Boolean> mIsDatabaseCreated = new MutableLiveData<>();
 
-    //TODO: Add Migration Strategy
 
     private static volatile AppDatabase INSTANCE;
 
+    /**
+     * get AppDatabase Singleton Instance.
+     * Database is created on first call of this function
+     *
+     * @param context the context
+     * @return the database instance
+     */
     public static AppDatabase getInstance(final Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
@@ -41,7 +53,7 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     /**
-     * Build the database. {@link Builder#build()} only sets icon_up the database configuration and
+     * Build the database. {@link Builder#build()} only sets up the database configuration and
      * creates a new instance of the database.
      * The SQLite database is only created when it's accessed for the first time.
      */
@@ -67,7 +79,11 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
 
-
+    /**
+     * get a observable LiveData Object of the boolean set if the database is created.
+     *
+     * @return LiveData Object
+     */
     public LiveData<Boolean> getDatabaseCreated() {
         return mIsDatabaseCreated;
     }
@@ -82,15 +98,20 @@ public abstract class AppDatabase extends RoomDatabase {
                     new PopulateDbAsync(INSTANCE).execute();
                 }
             };
+
     /**
      * Populate the database in the background.
-     * If you want to start with more words, just add them.
      */
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
         private final MoveDao mDao;
         private final AppDatabase mDb;
 
+        /**
+         * Instantiates a new Populate db async.
+         *
+         * @param db the app database to populate
+         */
         PopulateDbAsync(AppDatabase db) {
             mDb = db;
             mDao = mDb.moveDao();
@@ -99,7 +120,6 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         protected Void doInBackground(final Void... params) {
             // Start the app with a clean database every time.
-            // Not needed if you only populate on creation.
             mDao.deleteAll();
             List<Move> moves = DataGenerator.generateMoves();
             mDao.insertAll(moves.toArray(new Move[0]));
